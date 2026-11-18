@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>YouTubeの準備中</title>
+<style>
+  /* 一枚の画面：まん中に、アプリのアイコン・進み具合の円・ひとこと。アプリと同じ配色 */
+  :root {
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --fg: #111111;
+    --sub: #6b6b70;
+    --track: #dcdce2;
+    --accent: #2563eb;
+    --font: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #0f0f0f; --card: #1c1c1e; --fg: #ffffff; --sub: #9a9aa0; --track: #2c2c30; --accent: #4f8cff; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #0f0f0f; --card: #1c1c1e; --fg: #ffffff; --sub: #9a9aa0; --track: #2c2c30; --accent: #4f8cff; color-scheme: dark; }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--fg); font-family: var(--font);
+    display: flex; align-items: center; justify-content: center;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 24px; box-sizing: border-box;
+  }
+  .wrap { width: 100%; max-width: 360px; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+  .app { display: flex; align-items: center; gap: 10px; }
+  .app img { width: 36px; height: 36px; border-radius: 9px; }
+  .app span { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+
+  .ring { position: relative; width: 148px; height: 148px; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+  .ring .track { fill: none; stroke: var(--track); stroke-width: 10; }
+  .ring .bar { fill: none; stroke: var(--accent); stroke-width: 10; stroke-linecap: round; }
+  .ring .pct {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  }
+  .ring .pct small { font-size: 15px; font-weight: 600; margin-left: 2px; color: var(--sub); }
+
+  h1 { margin: 0; font-size: 19px; font-weight: 700; text-wrap: balance; }
+  .lead { margin: -12px 0 0; font-size: 14px; line-height: 1.6; color: var(--sub); }
+
+  .help { width: 100%; background: var(--card); border-radius: 14px; padding: 16px; box-sizing: border-box; text-align: left; display: flex; flex-direction: column; gap: 10px; }
+  .help b { font-size: 15px; }
+  .help p { margin: 0; font-size: 13px; line-height: 1.7; color: var(--sub); white-space: pre-line; }
+  .btn { display: block; text-align: center; padding: 12px; border-radius: 12px; background: var(--accent); color: #fff; font-weight: 700; font-size: 15px; text-decoration: none; }
+  .btn:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
+  .probe { position: absolute; width: 1px; height: 1px; border: 0; opacity: 0; pointer-events: none; left: -10px; top: -10px; }
+  body { margin: 0; }
+</style>
+</head>
+<body>
+
+
+<main class="wrap">
+  <div class="app"><img id="icon" src="icon.png" alt=""><span id="appName">おすすめ・ショート非表示</span></div>
+
+  <div class="ring" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="ring">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="track" cx="60" cy="60" r="50"></circle>
+      <circle class="bar" id="bar" cx="60" cy="60" r="50"></circle>
+    </svg>
+    <div class="pct"><span id="pct">0</span><small>%</small></div>
+  </div>
+
+  <h1 id="title">YouTubeを準備しています</h1>
+  <p class="lead" id="lead">おすすめとショートを隠す準備ができたら、自動でYouTubeが開きます</p>
+
+  <div class="help" id="help" hidden>
+    <b id="helpTitle">拡張機能がオフになっているかもしれません</b>
+    <p id="helpBody">iPhoneの「設定」→「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」をオンにして、「youtube.com」を「許可」にしてください。</p>
+    <a class="btn" id="go" href="https://m.youtube.com/">このままYouTubeを開く</a>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var DEMO = false; // 見本：拡張機能の代わりに、数秒で「準備できた」にする
+  var ja = (navigator.language || "ja").toLowerCase().indexOf("ja") === 0;
+  if (!ja) {
+    document.documentElement.lang = "en";
+    document.getElementById("appName").textContent = "No Recs & Shorts";
+    document.getElementById("title").textContent = "Getting YouTube ready";
+    document.getElementById("lead").textContent = "YouTube opens automatically once recommendations and Shorts are hidden.";
+    document.getElementById("helpTitle").textContent = "The extension may be turned off";
+    document.getElementById("helpBody").textContent = "Open Settings → Apps → Safari → Extensions → No Recs & Shorts, turn it on, and set youtube.com to Allow.";
+    document.getElementById("go").textContent = "Open YouTube anyway";
+    document.title = "Getting YouTube ready";
+  } else {
+    document.documentElement.lang = "ja";
+  }
+
+  // 行き先（アプリが ?to=/watch?v=... のように渡す）。YouTubeの中のページだけ
+  var to = "/";
+  try {
+    var q = new URLSearchParams(location.search).get("to") || "/";
+    if (q.charAt(0) === "/" && q.charAt(1) !== "/") to = q;
+  } catch (e) { to = "/"; }
+  var dest = "https://m.youtube.com" + to;
+  document.getElementById("go").href = DEMO ? "#" : dest;
+
+  // 拡張機能が動き出したかを、見えない小さな枠（YouTubeの文字だけのページ）で確かめる
+  var ready = false;
+  window.addEventListener("message", function (e) {
+    if (e.origin === "https://m.youtube.com" && e.data === "osh-ready") ready = true;
+  });
+  if (!DEMO) {
+    var f = document.createElement("iframe");
+    f.className = "probe";
+    f.setAttribute("aria-hidden", "true");
+    f.setAttribute("tabindex", "-1");
+    f.src = "https://m.youtube.com/robots.txt#osh-ping";
+    document.body.appendChild(f);
+  }
+
+  // 進み具合：準備ができるまでは、だんだんゆっくり9割に近づく。できたら100%まで進めて、YouTubeへ
+  var bar = document.getElementById("bar");
+  var pctEl = document.getElementById("pct");
+  var ring = document.getElementById("ring");
+  var C = 2 * Math.PI * 50;
+  bar.style.strokeDasharray = C.toFixed(2);
+  bar.style.strokeDashoffset = C.toFixed(2);
+  var t0 = performance.now(), last = t0, shown = 0, done = false, helpShown = false;
+  var demoReadyAt = 3800; // 見本では3.8秒で準備できたことにする
+
+  function frame(now) {
+    var dt = Math.min(64, now - last); last = now;
+    var el = now - t0;
+    if (DEMO && el > demoReadyAt) ready = true;
+    var target = ready ? 1 : 0.9 * (1 - Math.exp(-el / 2600));
+    shown += (target - shown) * Math.min(1, dt / (ready ? 90 : 160));
+    if (ready && 1 - shown < 0.004) shown = 1;
+    bar.style.strokeDashoffset = (C * (1 - shown)).toFixed(2);
+    var n = Math.floor(shown * 100);
+    pctEl.textContent = n;
+    ring.setAttribute("aria-valuenow", n);
+
+    if (!ready && !helpShown && el > 15000) { helpShown = true; document.getElementById("help").hidden = false; }
+    if (shown === 1 && !done) {
+      done = true;
+      setTimeout(function () {
+        if (DEMO) { t0 = performance.now(); shown = 0; done = false; ready = false; requestAnimationFrame(frame); return; }
+        location.replace(dest);
+      }, DEMO ? 1400 : 120);
+      if (!DEMO) return;
+      return;
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
