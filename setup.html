@@ -23,7 +23,7 @@
     background: var(--bg); color: var(--fg); font-family: var(--font);
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
-    padding-block: 20px 200px; box-sizing: border-box;
+    padding-block: 20px 240px; box-sizing: border-box;
   }
   .wrap { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
   .head { font-size: 13px; color: var(--sub); }
@@ -41,10 +41,15 @@
   .done b { font-size: 19px; color: var(--ok); }
   .done span { font-size: 14px; color: var(--sub); line-height: 1.6; }
 
-  /* 下のアドレスバーの左のボタンを指す矢印。位置は --x（左から）で合わせる */
+  /* 下のアドレスバーの左のボタンを指す矢印。ページの文字と重ならないよう、画面の下に背景つきの帯として固定する。
+     矢印の先がSafariのアドレスバーのすぐ上にくるように、下からの位置を合わせる。左右の位置は --x で合わせる */
+  .band {
+    position: fixed; left: 0; right: 0; bottom: 0; height: calc(env(safe-area-inset-bottom, 0px) + 150px);
+    background: linear-gradient(to bottom, transparent, var(--bg) 28%); pointer-events: none; z-index: 9;
+  }
   .pointer {
     --x: 29%;
-    position: fixed; left: var(--x); bottom: calc(env(safe-area-inset-bottom, 0px) + 2px);
+    position: fixed; left: var(--x); bottom: calc(env(safe-area-inset-bottom, 0px) - 40px);
     transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px;
     pointer-events: none; z-index: 10;
   }
@@ -74,6 +79,7 @@
     </div></li>
   </ol>
 </main>
+<div class="band" id="band"></div>
 <div class="pointer" id="pointer"><span class="lab">ここを押す</span><span class="arrow">↓</span></div>
 
 <script>
@@ -100,6 +106,7 @@
 
   function showDone() {
     document.getElementById("pointer").hidden = true;
+    document.getElementById("band").hidden = true;
     document.getElementById("main").innerHTML =
       "<div class='head'>おすすめ・ショート非表示の設定</div>" +
       "<div class='done'><b>✅ 設定できています</b><span>SafariでYouTubeを開くと、おすすめとショートが出なくなります。</span>" +
