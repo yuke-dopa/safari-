@@ -44,24 +44,27 @@
   /* 下のアドレスバーの左のボタンを指す矢印。ページの文字と重ならないよう、画面の下に背景つきの帯として固定する。
      矢印の先がSafariのアドレスバーのすぐ上にくるように、下からの位置を合わせる。左右の位置は --x で合わせる */
   .band {
-    position: fixed; left: 0; right: 0; bottom: 0; height: calc(env(safe-area-inset-bottom, 0px) + 150px);
+    position: fixed; left: 0; right: 0; bottom: 0; height: calc(env(safe-area-inset-bottom, 0px) + 80px);
     background: linear-gradient(to bottom, transparent, var(--bg) 28%); pointer-events: none; z-index: 9;
   }
-  /* 札「［▭］または［ぁあ］を押す」と、その下の矢印。iOSによってボタンの形が違うので、両方の形を見せる。
-     札と矢印は押しても何も起きない（下のボタンに指が届かないようにする）。矢印の左右の位置は --x で合わせる */
+  /* 手順1の中の「［▭］または［ぁあ］」。iOSによってボタンの形が違うので、両方の形を見せる */
+  .marks { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--sub); }
+  .mark { width: 40px; height: 40px; box-sizing: border-box; border-radius: 11px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); display: inline-flex; align-items: center; justify-content: center; font: 800 16px/1 var(--font); }
+  .mark svg { width: 24px; height: 24px; }
+  /* 画面の下の矢印。押しても何も起きない（下のボタンに指が届かないようにする） */
   .pointer {
-    --x: 29%;
     position: fixed; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom, 0px) - 40px);
-    padding: 0 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+    padding: 0 16px; display: flex;
     pointer-events: auto; z-index: 10; -webkit-user-select: none; user-select: none;
   }
-  .pointer .say { display: inline-flex; align-items: center; gap: 8px; background: var(--card); border: 3px solid var(--accent); border-radius: 16px; padding: 8px 12px; font: 800 16px/1 var(--font); color: var(--fg); white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
-  .pointer .say small { font-size: 14px; font-weight: 700; color: var(--sub); }
-  .pointer .mark { width: 40px; height: 40px; box-sizing: border-box; border-radius: 11px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); display: inline-flex; align-items: center; justify-content: center; font: 800 16px/1 var(--font); }
-  .pointer .mark svg { width: 24px; height: 24px; }
-  .pointer .arrow { display: block; width: 56px; margin-left: calc(var(--x) - 16px - 28px); text-align: center; font-size: 52px; line-height: 1; color: var(--accent); font-weight: 900; text-shadow: 0 0 6px var(--bg), 0 0 12px var(--bg); animation: bob 1.1s ease-in-out infinite; }
+  /* iOSによってボタンの場所が違うので、アドレスバーの上いっぱいに小さい矢印を並べる（波のように順に動く） */
+  .pointer .arrows { flex: 1; height: 52px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 4px 4px; }
+  .pointer .arrows i { font-style: normal; font-size: 34px; line-height: 1; color: var(--accent); font-weight: 900; text-shadow: 0 0 6px var(--bg), 0 0 12px var(--bg); animation: bob 1.1s ease-in-out infinite; }
+  .pointer .arrows i:nth-child(2) { animation-delay: .1s; } .pointer .arrows i:nth-child(3) { animation-delay: .2s; }
+  .pointer .arrows i:nth-child(4) { animation-delay: .3s; } .pointer .arrows i:nth-child(5) { animation-delay: .4s; }
+  .pointer .arrows i:nth-child(6) { animation-delay: .5s; } .pointer .arrows i:nth-child(7) { animation-delay: .6s; }
   @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
-  @media (prefers-reduced-motion: reduce) { .pointer .arrow { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .pointer .arrows i { animation: none; } }
 </style>
 </head>
 <body>
@@ -69,28 +72,26 @@
   <h1>3ステップで設定できます</h1>
   <ol class="steps">
     <li><span class="num">1</span><div class="body">
-      <b>アドレスバーの左のボタンを押す</b>
-      <span class="d">矢印の先のボタンです。iPhoneによって形が違い、「▭」のようなマークか「ぁあ」のどちらかです。押すと、下からメニューが出ます。</span>
+      <b>アドレスバーのボタンを押す</b>
+      <span class="marks">
+        <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="3" width="16" height="10" rx="2.5"/><line x1="4" y1="17.5" x2="20" y2="17.5"/><line x1="4" y1="21.5" x2="14" y2="21.5"/></svg></span>
+        <span>または</span>
+        <span class="mark">ぁあ</span>
+      </span>
     </div></li>
     <li><span class="num">2</span><div class="body">
       <b>「<span class="key">機能拡張を管理</span>」を押す</b>
     </div></li>
     <li><span class="num">3</span><div class="body">
       <b>スイッチをオンにして「<span class="key">完了</span>」</b>
-      <span class="d">「おすすめ・ショート非表示」のスイッチを押して緑にします。終わったら、下のボタンでYouTubeを開いてください。おすすめが消えていれば設定は完了です。<br>消えていないときは、YouTubeの画面でもう一度アドレスバーの左のボタン →「おすすめ・ショート非表示」→「<span class="key">常に許可</span>」を押してください。</span>
+      <span class="d">「おすすめ・ショート非表示」のスイッチを押して緑にします。終わったら、下のボタンでYouTubeを開いてください。おすすめが消えていれば設定は完了です。<br>消えていないときは、YouTubeの画面でもう一度アドレスバーのボタン →「おすすめ・ショート非表示」→「<span class="key">常に許可</span>」を押してください。</span>
       <a class="btn" id="open" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a>
     </div></li>
   </ol>
 </main>
 <div class="band" id="band"></div>
 <div class="pointer" id="pointer" aria-hidden="true">
-  <span class="say">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="3" width="16" height="10" rx="2.5"/><line x1="4" y1="17.5" x2="20" y2="17.5"/><line x1="4" y1="21.5" x2="14" y2="21.5"/></svg></span>
-    <small>または</small>
-    <span class="mark">ぁあ</span>
-    <span>を押す</span>
-  </span>
-  <span class="arrow">↓</span>
+  <span class="arrows"><i>↓</i><i>↓</i><i>↓</i><i>↓</i><i>↓</i><i>↓</i><i>↓</i></span>
 </div>
 
 <script>
