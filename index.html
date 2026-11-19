@@ -76,7 +76,7 @@
   <div class="help" id="help" hidden>
     <b id="helpTitle">拡張機能がオフになっているかもしれません</b>
     <p id="helpBody">iPhoneの「設定」→「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」をオンにして、「youtube.com」を「許可」にしてください。</p>
-    <a class="btn" id="go" href="https://m.youtube.com/">このままYouTubeを開く</a>
+    <a class="btn" id="go" href="https://m.youtube.com/?noapp=1">このままYouTubeを開く</a>
   </div>
 </main>
 
@@ -104,7 +104,8 @@
     var q = new URLSearchParams(location.search).get("to") || "/";
     if (q.charAt(0) === "/" && q.charAt(1) !== "/") to = q;
   } catch (e) { to = "/"; }
-  var dest = "https://m.youtube.com" + to;
+  // noapp を付けると、YouTube公式アプリが入っていても、アプリではなくSafariで開く（YouTubeの決まり）
+  var dest = "https://m.youtube.com" + to + (to.indexOf("?") >= 0 ? "&" : "?") + "noapp=1";
   document.getElementById("go").href = DEMO ? "#" : dest;
 
   // 拡張機能が動き出したかを、見えない小さな枠（YouTubeの文字だけのページ）で確かめる
