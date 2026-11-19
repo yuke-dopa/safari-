@@ -53,8 +53,9 @@
     transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px;
     pointer-events: none; z-index: 10;
   }
-  .pointer .lab { background: var(--accent); color: #fff; font: 700 13px/1 var(--font); padding: 7px 10px; border-radius: 10px; white-space: nowrap; }
-  .pointer .arrow { font-size: 34px; line-height: 1; color: var(--accent); font-weight: 900; animation: bob 1.1s ease-in-out infinite; }
+  .pointer .lab { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; font: 800 16px/1 var(--font); padding: 10px 14px; border-radius: 14px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+  .pointer .ico { width: 22px; height: 22px; }
+  .pointer .arrow { font-size: 44px; line-height: 1; color: var(--accent); font-weight: 900; animation: bob 1.1s ease-in-out infinite; }
   @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
   @media (prefers-reduced-motion: reduce) { .pointer .arrow { animation: none; } }
 </style>
@@ -80,13 +81,13 @@
   </ol>
 </main>
 <div class="band" id="band"></div>
-<div class="pointer" id="pointer"><span class="lab">ここを押す</span><span class="arrow">↓</span></div>
+<div class="pointer" id="pointer"><span class="lab"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 18h14M5 21.5h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>このボタンを押す</span><span class="arrow">↓</span></div>
 
 <script>
 (function () {
   "use strict";
   // 拡張機能がもう動いているかを、見えない小さな枠（YouTubeの文字だけのページ）で確かめる。
-  // 設定の途中で動き出すこともあるので、3秒ごとに確かめ直す
+  // 設定の途中で動き出すこともあるので、1秒ごとに確かめ直す（オンにしたら、すぐ「設定できています」に変わるように）
   var ready = false, frame = null;
   window.addEventListener("message", function (e) {
     if (e.origin === "https://m.youtube.com" && e.data === "osh-ready" && !ready) { ready = true; showDone(); }
@@ -101,7 +102,7 @@
     document.body.appendChild(frame);
   }
   probe();
-  setInterval(probe, 3000);
+  setInterval(probe, 1000);
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") probe(); });
 
   function showDone() {
