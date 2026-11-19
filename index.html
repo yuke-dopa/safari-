@@ -148,8 +148,8 @@
     pctEl.textContent = n;
     ring.setAttribute("aria-valuenow", n);
 
-    // 7秒たっても拡張機能から知らせが来なければ、オフかもしれないので案内を出す（円は灰色にする）
-    if (!ready && !helpShown && el > 7000) {
+    // 12秒たっても拡張機能から知らせが来なければ、オフかもしれないので案内を出す（円は灰色にする）。Safariを開いた直後は準備に7〜10秒かかることがある
+    if (!ready && !helpShown && el > 12000) {
       helpShown = true;
       document.getElementById("help").hidden = false;
       ring.classList.add("stop");
