@@ -19,6 +19,7 @@
   :root[data-theme="dark"] { --bg: #0f0f0f; --card: #1c1c1e; --fg: #ffffff; --sub: #9a9aa0; --line: #2c2c30; --accent: #4f8cff; --ok: #34c759; color-scheme: dark; }
 
   html, body { margin: 0; }
+  [hidden] { display: none !important; }
   body {
     background: var(--bg); color: var(--fg); font-family: var(--font);
     padding-left: max(16px, env(safe-area-inset-left, 0px));
@@ -69,6 +70,7 @@
 </head>
 <body>
 <main class="wrap" id="main">
+  <div class="wrap" id="steps">
   <h1>3ステップで設定できます</h1>
   <ol class="steps">
     <li><span class="num">1</span><div class="body">
@@ -88,6 +90,9 @@
       <a class="btn" id="open" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a>
     </div></li>
   </ol>
+  </div>
+  <div class="done" id="done" hidden><b>✅ 設定できています</b><span>SafariでYouTubeを開くと、おすすめとショートが出なくなります。</span>
+    <a class="btn" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a></div>
 </main>
 <div class="band" id="band"></div>
 <div class="pointer" id="pointer" aria-hidden="true">
@@ -97,14 +102,15 @@
 <script>
 (function () {
   "use strict";
-  // 拡張機能がもう動いているかを、見えない小さな枠（YouTubeの文字だけのページ）で確かめる。
-  // 設定の途中で動き出すこともあるので、1秒ごとに確かめ直す（オンにしたら、すぐ「設定できています」に変わるように）
-  var ready = false, frame = null;
+  // 拡張機能が動いているかを、見えない小さな枠（YouTubeの文字だけのページ）で確かめる。
+  // 1秒ごとに確かめ直し、オンにしたらすぐ「設定できています」に、オフにしたら数秒で手順の表示に戻す
+  var ready = false, frame = null, lastOk = 0;
   window.addEventListener("message", function (e) {
-    if (e.origin === "https://m.youtube.com" && e.data === "osh-ready" && !ready) { ready = true; showDone(); }
+    if (e.origin === "https://m.youtube.com" && e.data === "osh-ready") { lastOk = Date.now(); if (!ready) { ready = true; show(); } }
   });
   function probe() {
-    if (ready) return;
+    // 返事が4秒来なければ、拡張機能はオフになったとみなす
+    if (ready && Date.now() - lastOk > 4000) { ready = false; show(); }
     if (frame) frame.remove();
     frame = document.createElement("iframe");
     frame.setAttribute("aria-hidden", "true"); frame.tabIndex = -1;
@@ -116,12 +122,11 @@
   setInterval(probe, 1000);
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") probe(); });
 
-  function showDone() {
-    document.getElementById("pointer").hidden = true;
-    document.getElementById("band").hidden = true;
-    document.getElementById("main").innerHTML =
-      "<div class='done'><b>✅ 設定できています</b><span>SafariでYouTubeを開くと、おすすめとショートが出なくなります。</span>" +
-      "<a class='btn' href='https://m.youtube.com/?noapp=1'>YouTubeを開く</a></div>";
+  function show() {
+    document.getElementById("pointer").hidden = ready;
+    document.getElementById("band").hidden = ready;
+    document.getElementById("steps").hidden = ready;
+    document.getElementById("done").hidden = !ready;
   }
 })();
 </script>
