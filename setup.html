@@ -49,12 +49,13 @@
   }
   .pointer {
     --x: 29%;
-    position: fixed; left: var(--x); bottom: calc(env(safe-area-inset-bottom, 0px) - 40px);
-    transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px;
-    pointer-events: none; z-index: 10;
+    position: fixed; left: var(--x); bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
+    transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px;
+    pointer-events: auto; z-index: 10; -webkit-user-select: none; user-select: none;
   }
-  .pointer .lab { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; font: 800 16px/1 var(--font); padding: 10px 14px; border-radius: 14px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
-  .pointer .arrow { font-size: 44px; line-height: 1; color: var(--accent); font-weight: 900; animation: bob 1.1s ease-in-out infinite; }
+  /* 押すボタンと同じ形の四角。押しても何も起きない（下のボタンに指が届かないようにする） */
+  .pointer .mark { width: 52px; height: 52px; box-sizing: border-box; border-radius: 14px; background: var(--card); border: 3px solid var(--accent); color: var(--fg); font: 800 18px/46px var(--font); text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
+  .pointer .arrow { font-size: 56px; line-height: 1; color: var(--accent); font-weight: 900; text-shadow: 0 0 6px var(--bg), 0 0 12px var(--bg); animation: bob 1.1s ease-in-out infinite; }
   @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
   @media (prefers-reduced-motion: reduce) { .pointer .arrow { animation: none; } }
 </style>
@@ -80,7 +81,7 @@
   </ol>
 </main>
 <div class="band" id="band"></div>
-<div class="pointer" id="pointer"><span class="arrow">↓</span></div>
+<div class="pointer" id="pointer" aria-hidden="true"><span class="arrow">↓</span><span class="mark">ぁあ</span></div>
 
 <script>
 (function () {
