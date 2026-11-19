@@ -52,6 +52,8 @@
   .help p { margin: 0; font-size: 13px; line-height: 1.7; color: var(--sub); white-space: pre-line; }
   .btn { display: block; text-align: center; padding: 12px; border-radius: 12px; background: var(--accent); color: #fff; font-weight: 700; font-size: 15px; text-decoration: none; }
   .btn:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
+  .btn.sub { background: transparent; color: var(--accent); padding: 8px; }
+  .ring.stop .bar { stroke: var(--sub); }
   .probe { position: absolute; width: 1px; height: 1px; border: 0; opacity: 0; pointer-events: none; left: -10px; top: -10px; }
   body { margin: 0; }
 </style>
@@ -76,7 +78,8 @@
   <div class="help" id="help" hidden>
     <b id="helpTitle">拡張機能がオフになっているかもしれません</b>
     <p id="helpBody">iPhoneの「設定」→「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」をオンにして、「youtube.com」を「許可」にしてください。</p>
-    <a class="btn" id="go" href="https://m.youtube.com/?noapp=1">このままYouTubeを開く</a>
+    <a class="btn" id="setup" href="setup.html">設定を確かめる</a>
+    <a class="btn sub" id="go" href="https://m.youtube.com/?noapp=1">このままYouTubeを開く</a>
   </div>
 </main>
 
@@ -93,6 +96,7 @@
     document.getElementById("helpTitle").textContent = "The extension may be turned off";
     document.getElementById("helpBody").textContent = "Open Settings → Apps → Safari → Extensions → No Recs & Shorts, turn it on, and set youtube.com to Allow.";
     document.getElementById("go").textContent = "Open YouTube anyway";
+    document.getElementById("setup").textContent = "Check the setup";
     document.title = "Getting YouTube ready";
   } else {
     document.documentElement.lang = "ja";
@@ -144,7 +148,16 @@
     pctEl.textContent = n;
     ring.setAttribute("aria-valuenow", n);
 
-    if (!ready && !helpShown && el > 15000) { helpShown = true; document.getElementById("help").hidden = false; }
+    // 7秒たっても拡張機能から知らせが来なければ、オフかもしれないので案内を出す（円は灰色にする）
+    if (!ready && !helpShown && el > 7000) {
+      helpShown = true;
+      document.getElementById("help").hidden = false;
+      ring.classList.add("stop");
+      document.getElementById("title").textContent = ja ? "まだ準備ができていません" : "Not ready yet";
+      document.getElementById("lead").textContent = ja ? "拡張機能がオフになっているかもしれません。このまま待つと、準備ができしだいYouTubeが開きます" : "The extension may be off. If you wait, YouTube opens as soon as it's ready.";
+    }
+    // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備に10秒ほどかかることがある）
+    if (ready && helpShown) { ring.classList.remove("stop"); document.getElementById("help").hidden = true; }
     if (shown === 1 && !done) {
       done = true;
       setTimeout(function () {
