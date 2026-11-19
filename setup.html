@@ -66,19 +66,18 @@
 </head>
 <body>
 <main class="wrap" id="main">
-  <div class="head">おすすめ・ショート非表示の設定</div>
   <h1>3ステップで設定できます</h1>
   <ol class="steps">
     <li><span class="num">1</span><div class="body">
-      <b>下のアドレスバーの、左のボタンを押す</b>
+      <b>アドレスバーの左のボタンを押す</b>
       <span class="d">矢印の先のボタンです。iPhoneによって形が違い、「▭」のようなマークか「ぁあ」のどちらかです。押すと、下からメニューが出ます。</span>
     </div></li>
     <li><span class="num">2</span><div class="body">
       <b>「<span class="key">機能拡張を管理</span>」を押す</b>
     </div></li>
     <li><span class="num">3</span><div class="body">
-      <b>「<span class="key">おすすめ・ショート非表示</span>」をオンにして「<span class="key">完了</span>」</b>
-      <span class="d">スイッチを押して緑にします。終わったら、下のボタンでYouTubeを開いてください。おすすめが消えていれば設定は完了です。<br>消えていないときは、YouTubeの画面でもう一度アドレスバーの左のボタン →「おすすめ・ショート非表示」→「<span class="key">常に許可</span>」を押してください。</span>
+      <b>スイッチをオンにして「<span class="key">完了</span>」</b>
+      <span class="d">「おすすめ・ショート非表示」のスイッチを押して緑にします。終わったら、下のボタンでYouTubeを開いてください。おすすめが消えていれば設定は完了です。<br>消えていないときは、YouTubeの画面でもう一度アドレスバーの左のボタン →「おすすめ・ショート非表示」→「<span class="key">常に許可</span>」を押してください。</span>
       <a class="btn" id="open" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a>
     </div></li>
   </ol>
@@ -120,7 +119,6 @@
     document.getElementById("pointer").hidden = true;
     document.getElementById("band").hidden = true;
     document.getElementById("main").innerHTML =
-      "<div class='head'>おすすめ・ショート非表示の設定</div>" +
       "<div class='done'><b>✅ 設定できています</b><span>SafariでYouTubeを開くと、おすすめとショートが出なくなります。</span>" +
       "<a class='btn' href='https://m.youtube.com/?noapp=1'>YouTubeを開く</a></div>";
   }
