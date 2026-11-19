@@ -54,6 +54,8 @@
   .btn:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
   .btn.sub { background: transparent; color: var(--accent); padding: 8px; }
   .ring.stop .bar { stroke: var(--sub); }
+  .quick { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--card); color: var(--sub); font-size: 13px; text-decoration: none; }
+  .quick b { color: var(--accent); white-space: nowrap; }
   .probe { position: absolute; width: 1px; height: 1px; border: 0; opacity: 0; pointer-events: none; left: -10px; top: -10px; }
   body { margin: 0; }
 </style>
@@ -74,6 +76,7 @@
 
   <h1 id="title">YouTubeを準備しています</h1>
   <p class="lead" id="lead">おすすめとショートを隠す準備ができたら、自動でYouTubeが開きます</p>
+  <a class="quick" id="quick" href="setup.html"><span id="quickText">拡張機能をまだ設定していない方は</span><b id="quickBtn">設定する ›</b></a>
 
   <div class="help" id="help" hidden>
     <b id="helpTitle">拡張機能がオフになっているかもしれません</b>
@@ -97,6 +100,8 @@
     document.getElementById("helpBody").textContent = "Open Settings → Apps → Safari → Extensions → No Recs & Shorts, turn it on, and set youtube.com to Allow.";
     document.getElementById("go").textContent = "Open YouTube anyway";
     document.getElementById("setup").textContent = "Check the setup";
+    document.getElementById("quickText").textContent = "Haven't set up the extension yet?";
+    document.getElementById("quickBtn").textContent = "Set up ›";
     document.title = "Getting YouTube ready";
   } else {
     document.documentElement.lang = "ja";
@@ -152,12 +157,14 @@
     if (!ready && !helpShown && el > 12000) {
       helpShown = true;
       document.getElementById("help").hidden = false;
+      document.getElementById("quick").hidden = true;
       ring.classList.add("stop");
       document.getElementById("title").textContent = ja ? "まだ準備ができていません" : "Not ready yet";
       document.getElementById("lead").textContent = ja ? "拡張機能がオフになっているかもしれません。このまま待つと、準備ができしだいYouTubeが開きます" : "The extension may be off. If you wait, YouTube opens as soon as it's ready.";
     }
     // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備に10秒ほどかかることがある）
     if (ready && helpShown) { ring.classList.remove("stop"); document.getElementById("help").hidden = true; }
+    if (ready) document.getElementById("quick").hidden = true;
     if (shown === 1 && !done) {
       done = true;
       setTimeout(function () {
