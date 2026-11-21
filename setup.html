@@ -47,8 +47,14 @@
   .trouble summary::-webkit-details-marker { display: none; }
   .trouble summary::after { content: "＋"; color: var(--accent); font-weight: 800; }
   .trouble[open] summary::after { content: "－"; }
-  .trouble ol { margin: 0 0 12px; padding-left: 1.3em; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.65; }
-  .trouble li span { color: var(--sub); font-size: 13px; }
+  /* 「こういうとき → これをする」の組で見せる（全部やる必要はないと分かるように） */
+  .trouble .tlead { margin: 0 0 8px; font-size: 13px; color: var(--sub); }
+  .trouble .cases { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .trouble .cases li { background: var(--bg); border-radius: 12px; padding: 10px 12px; }
+  .trouble .case { font-size: 14px; font-weight: 700; line-height: 1.5; }
+  .trouble .case::before { content: "【"; } .trouble .case::after { content: "】"; }
+  .trouble .fix { margin-top: 6px; font-size: 14px; line-height: 1.65; }
+  .trouble .fix b { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 12px; line-height: 20px; }
   .trouble a { color: var(--accent); font-weight: 700; }
   .btn.sub2 { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
 
@@ -123,12 +129,13 @@
     <a class="btn sub2" href="osusumehide://">アプリに戻る</a></div>
   <details class="trouble" id="trouble">
     <summary>設定できませんか？</summary>
-    <ol>
-      <li>オンにしたのに「✅ 設定できています」に変わらないときは、YouTubeの画面で「許可」が要ることがあります。<a href="https://m.youtube.com/?noapp=1">YouTubeを開いて</a>、アドレスバーのボタン →「<span class="key">おすすめ・ショート非表示</span>」→「<span class="key">常に許可</span>」を押してください</li>
-      <li>「設定」アプリ →「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」を一度オフにして、もう一度オンにする</li>
-      <li>SafariのYouTubeのタブを閉じて、アプリの「SafariでYouTubeを開く」から開き直す</li>
-      <li>それでも消えないときは、アプリの「ご不満・ご要望」から教えてください<br><span>YouTubeの画面が変わると、消えなくなることがあります。知らせてもらえれば、すぐ直します。</span></li>
-    </ol>
+    <p class="tlead">当てはまるものだけ、やってみてください。</p>
+    <ul class="cases">
+      <li><div class="case">オンにしたのに「✅ 設定できています」に変わらない</div><div class="fix"><b>対策</b><a href="https://m.youtube.com/?noapp=1">YouTubeを開いて</a>、アドレスバーのボタン →「<span class="key">おすすめ・ショート非表示</span>」→「<span class="key">常に許可</span>」を押す</div></li>
+      <li><div class="case">アプリやiOSを更新した・入れ直したあと、うまく動かない</div><div class="fix"><b>対策</b>「設定」アプリ →「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」を一度オフにして、もう一度オンにする</div></li>
+      <li><div class="case">前から開いていたYouTubeのタブで、おすすめやショートが出る</div><div class="fix"><b>対策</b>そのタブを閉じて、アプリの「SafariでYouTubeを開く」から開き直す</div></li>
+      <li><div class="case">上のどれをしても直らない</div><div class="fix"><b>対策</b>アプリの「ご不満・ご要望」から教えてください。すぐ直します</div></li>
+    </ul>
   </details>
 </main>
 <div class="band" id="band"></div>
