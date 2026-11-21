@@ -74,6 +74,7 @@
   .nw { display: inline-block; }
   .flow > li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 800; }
   .flow .marks { margin-top: 6px; }
+  .fin { margin: 10px 0 0; font-size: 14px; font-weight: 700; color: var(--ok); }
   /* iPhoneに出る確認画面の見本（写真の手書きを整えたもの） */
   .dlg { margin-top: 8px; max-width: 280px; background: #1c1c1e; border-radius: 18px; padding: 14px 12px 12px; display: flex; flex-direction: column; gap: 7px; }
   .dlg .dt { margin: 0 4px 4px; color: #fff; font-size: 13px; font-weight: 700; line-height: 1.4; }
@@ -116,7 +117,7 @@
 <body>
 <main class="wrap" id="main">
   <div class="wrap" id="steps">
-  <h1>3ステップで設定できます</h1>
+  <h1>2ステップで設定できます</h1>
   <ol class="steps">
     <li><div class="body">
       <b class="ttl"><span class="num">1</span>拡張機能をオンにする</b>
@@ -160,9 +161,7 @@
           </div>
         </li>
       </ol>
-    </div></li>
-    <li><div class="body">
-      <b class="ttl"><span class="num">3</span>おすすめとショートが消えたら完了</b>
+      <p class="fin">おすすめとショートが消えたら、設定は完了です</p>
     </div></li>
   </ol>
   </div>
