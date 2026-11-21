@@ -70,6 +70,13 @@
   .flow > li { position: relative; padding-left: 18px; }
   .flow > li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 800; }
   .flow .marks { margin-top: 6px; }
+  /* iPhoneに出る確認画面の見本（写真の手書きを整えたもの） */
+  .dlg { margin-top: 8px; max-width: 280px; background: #1c1c1e; border-radius: 18px; padding: 14px 12px 12px; display: flex; flex-direction: column; gap: 7px; }
+  .dlg .dt { margin: 0 4px 4px; color: #fff; font-size: 13px; font-weight: 700; line-height: 1.4; }
+  .dlg .db { display: block; text-align: center; padding: 9px 6px; border-radius: 999px; background: #3a3a3c; color: #fff; font-size: 13px; font-weight: 600; }
+  .dlg .db.blue { background: #4a8af4; }
+  .dlg .hit, .dlg .hitgroup { outline: 3px solid #ff3b30; outline-offset: 3px; }
+  .dlg .hitgroup { display: flex; flex-direction: column; gap: 7px; border-radius: 22px; }
   .marks { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--sub); }
   .mark { width: 40px; height: 40px; box-sizing: border-box; border-radius: 11px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); display: inline-flex; align-items: center; justify-content: center; font: 800 16px/1 var(--font); }
   .mark svg { width: 24px; height: 24px; }
@@ -130,7 +137,24 @@
       <ol class="flow">
         <li>YouTubeの画面で、アドレスバーのボタンを押す</li>
         <li>「<span class="key">おすすめ・ショート非表示</span>」を押す</li>
-        <li>「<span class="key">常に許可</span>」を押す</li>
+        <li>「<span class="key">常に許可…</span>」を押す
+          <div class="dlg" aria-hidden="true">
+            <p class="dt">“おすすめ・ショート非表示”がm.youtube.comへのアクセスを求めています。</p>
+            <span class="db blue">1日だけ許可</span>
+            <span class="db hit">常に許可…</span>
+            <span class="db">キャンセル</span>
+          </div>
+        </li>
+        <li>「<span class="key">常に許可</span>」をもう一度押す（どちらでもOK）
+          <div class="dlg" aria-hidden="true">
+            <p class="dt">“おすすめ・ショート非表示”を常に許可してもよろしいですか?</p>
+            <span class="hitgroup">
+              <span class="db">このWebサイトで常に許可</span>
+              <span class="db">すべてのWebサイトで常に許可</span>
+            </span>
+            <span class="db">キャンセル</span>
+          </div>
+        </li>
       </ol>
     </div></li>
     <li><span class="num">3</span><div class="body">
