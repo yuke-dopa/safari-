@@ -77,6 +77,8 @@
   /* オンにしたスイッチの絵（iPhoneのスイッチと同じ見た目） */
   .sw { display: inline-block; vertical-align: middle; position: relative; width: 44px; height: 26px; margin-left: 4px; border-radius: 13px; background: #34c759; }
   .sw::after { content: ""; position: absolute; top: 2px; right: 2px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+  /* 手順の番号を続きから（【4】〜【7】）にする */
+  .flow.cont { counter-reset: fl 3; }
   .flow .where { display: block; margin-top: 2px; font-size: 13px; color: var(--sub); }
   .backnote { margin: 4px 0 0; font-size: 13px; line-height: 1.6; color: var(--sub); }
   .backnote b { color: var(--fg); font-size: 15px; }
@@ -173,10 +175,9 @@
 <body>
 <main class="wrap" id="main">
   <div class="wrap" id="steps">
-  <h1>2ステップで設定できます</h1>
+  <h1>7ステップで設定できます</h1>
   <ol class="steps">
     <li><div class="body">
-      <b class="ttl"><span class="num">1</span>拡張機能をオンにする</b>
       <ol class="flow">
         <li>
           <span class="marks">
@@ -191,9 +192,6 @@
         <li class="withicon"><span class="mini puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 5H14.7a2.5 2.5 0 0 1 2.5 2.5V9.7a2.3 2.3 0 1 1 0 4.6V16.5a2.5 2.5 0 0 1-2.5 2.5H6.8a2.5 2.5 0 0 1-2.5-2.5V14.3a2.3 2.3 0 1 0 0-4.6V7.5a2.5 2.5 0 0 1 2.5-2.5z"/></svg></span>「<span class="key">機能拡張を管理</span>」を押す</li>
         <li><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を</span><span class="sw" role="img" aria-label="オン"></span></li>
       </ol>
-    </div></li>
-    <li><div class="body">
-      <b class="ttl"><span class="num">2</span>YouTubeで「常に許可」を押す</b>
       <!-- 拡張機能をオンにしても、YouTubeのサイトは「確認」のままのことが多い。許可するにはYouTubeを開く必要があるので、目的が分かる名前のボタンにする -->
       <!-- 動く見本：YouTubeの画面に似せた絵の上で、押す場所を指のマークが順番に示す（写真3枚を描き直したもの）。
            許可するまで拡張機能はYouTubeの中で何もできないので、YouTubeに行く前にここで押す場所を覚えてもらう -->
@@ -208,7 +206,7 @@
           <span class="finger" id="finger"></span>
         </div>
       </div>
-      <ol class="flow demosteps" id="demosteps">
+      <ol class="flow demosteps cont" id="demosteps">
         <li data-s="0"><span class="nw">YouTubeの画面で、</span><span class="nw">アドレスバーのボタンを押す</span><span class="sub">（いま画面の端の矢印がさしているのと、同じ場所です）</span></li>
         <li data-s="1"><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を押す</span></li>
         <li data-s="2">「<span class="key">常に許可…</span>」を押す</li>
