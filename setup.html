@@ -49,6 +49,7 @@
   .trouble[open] summary::after { content: "－"; }
   .trouble ol { margin: 0 0 12px; padding-left: 1.3em; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.65; }
   .trouble li span { color: var(--sub); font-size: 13px; }
+  .trouble a { color: var(--accent); font-weight: 700; }
 
   /* 下のアドレスバーの左のボタンを指す矢印。ページの文字と重ならないよう、画面の下に背景つきの帯として固定する。
      矢印の先がSafariのアドレスバーのすぐ上にくるように、下からの位置を合わせる。左右の位置は --x で合わせる */
@@ -101,9 +102,9 @@
       <b>「<span class="key">機能拡張を管理</span>」を押す</b>
     </div></li>
     <li><span class="num">3</span><div class="body">
-      <b>スイッチをオンにして「<span class="key">完了</span>」</b>
-      <span class="d">「おすすめ・ショート非表示」のスイッチを押して緑にします。終わったら、下のボタンでYouTubeを開いてください。おすすめが消えていれば設定は完了です。<br>消えていないときは、YouTubeの画面でもう一度アドレスバーのボタン →「おすすめ・ショート非表示」→「<span class="key">常に許可</span>」を押してください。</span>
-      <a class="btn" id="open" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a>
+      <b>スイッチをオンにして「完了」</b>
+      <span class="d">「おすすめ・ショート非表示」のスイッチを押して緑にします。設定できると、この画面が自動で「✅ 設定できています」に変わり、YouTubeを開くボタンが出ます。</span>
+      <!-- 設定できていないうちは「YouTubeを開く」ボタンを出さない（押すと、おすすめが出たままのYouTubeが開いてしまうため） -->
     </div></li>
   </ol>
   </div>
@@ -112,7 +113,7 @@
   <details class="trouble" id="trouble">
     <summary>うまく消えないときは</summary>
     <ol>
-      <li>YouTubeの画面で、アドレスバーのボタン →「<span class="key">おすすめ・ショート非表示</span>」→「<span class="key">常に許可</span>」を押す</li>
+      <li>オンにしたのに「✅ 設定できています」に変わらないときは、YouTubeの画面で「許可」が要ることがあります。<a href="https://m.youtube.com/?noapp=1">YouTubeを開いて</a>、アドレスバーのボタン →「<span class="key">おすすめ・ショート非表示</span>」→「<span class="key">常に許可</span>」を押してください</li>
       <li>「設定」アプリ →「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」を一度オフにして、もう一度オンにする</li>
       <li>SafariのYouTubeのタブを閉じて、アプリの「SafariでYouTubeを開く」から開き直す</li>
       <li>それでも消えないときは、アプリの「ご不満・ご要望」から教えてください<br><span>YouTubeの画面が変わると、消えなくなることがあります。知らせてもらえれば、すぐ直します。</span></li>
