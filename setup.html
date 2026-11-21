@@ -50,6 +50,7 @@
   .trouble ol { margin: 0 0 12px; padding-left: 1.3em; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.65; }
   .trouble li span { color: var(--sub); font-size: 13px; }
   .trouble a { color: var(--accent); font-weight: 700; }
+  .btn.sub2 { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
 
   /* 下のアドレスバーの左のボタンを指す矢印。ページの文字と重ならないよう、画面の下に背景つきの帯として固定する。
      矢印の先がSafariのアドレスバーのすぐ上にくるように、下からの位置を合わせる。左右の位置は --x で合わせる */
@@ -109,9 +110,11 @@
   </ol>
   </div>
   <div class="done" id="done" hidden><b>✅ 設定できています</b><span>SafariでYouTubeを開くと、おすすめとショートが出なくなります。</span>
-    <a class="btn" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a></div>
+    <a class="btn" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a>
+    <!-- アプリから「Safariで確かめる」で来たときのために、アプリに戻る入口（アプリのURLの名前 osusumehide://） -->
+    <a class="btn sub2" href="osusumehide://">アプリに戻る</a></div>
   <details class="trouble" id="trouble">
-    <summary>うまく消えないときは</summary>
+    <summary>設定できませんか？</summary>
     <ol>
       <li>オンにしたのに「✅ 設定できています」に変わらないときは、YouTubeの画面で「許可」が要ることがあります。<a href="https://m.youtube.com/?noapp=1">YouTubeを開いて</a>、アドレスバーのボタン →「<span class="key">おすすめ・ショート非表示</span>」→「<span class="key">常に許可</span>」を押してください</li>
       <li>「設定」アプリ →「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」を一度オフにして、もう一度オンにする</li>
