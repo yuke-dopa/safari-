@@ -30,7 +30,9 @@
   .head { font-size: 13px; color: var(--sub); }
   h1 { margin: 0; font-size: 22px; line-height: 1.4; text-wrap: balance; }
   .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-  .steps li { background: var(--card); border-radius: 16px; padding: 16px; display: flex; gap: 12px; }
+  .steps > li { background: var(--card); border-radius: 16px; padding: 16px 14px; }
+  /* 番号は見出しの左に置き、下の説明は横幅いっぱいに使う（左に番号の列を作ると、狭い画面で中途半端に折り返すため） */
+  .ttl { display: flex; align-items: center; gap: 10px; font-size: 16px !important; }
   .num { flex: 0 0 28px; height: 28px; border-radius: 14px; background: var(--accent); color: #fff; font: 700 15px/28px var(--font); text-align: center; }
   .body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
   .body b { font-size: 17px; line-height: 1.45; }
@@ -67,7 +69,9 @@
   /* 手順1の中の「［▭］または［ぁあ］または［パズル］」。iOSや端末によってボタンの形が違うので、全部の形を見せる */
   /* 手順の中の小さな流れ。番号の代わりに「→」でつなぐ */
   .flow { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5; }
-  .flow > li { position: relative; padding-left: 18px; }
+  .flow > li { position: relative; padding-left: 16px; }
+  /* 言葉のまとまり。この中では折り返さず、まとまりの切れ目でだけ改行する */
+  .nw { display: inline-block; }
   .flow > li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 800; }
   .flow .marks { margin-top: 6px; }
   /* iPhoneに出る確認画面の見本（写真の手書きを整えたもの） */
@@ -114,8 +118,8 @@
   <div class="wrap" id="steps">
   <h1>3ステップで設定できます</h1>
   <ol class="steps">
-    <li><span class="num">1</span><div class="body">
-      <b>拡張機能をオンにする</b>
+    <li><div class="body">
+      <b class="ttl"><span class="num">1</span>拡張機能をオンにする</b>
       <ol class="flow">
         <li>アドレスバーのボタンを押す
           <span class="marks">
@@ -127,16 +131,16 @@
           </span>
         </li>
         <li class="withicon"><span class="mini puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M7 6h3.2a2.3 2.3 0 1 1 4.6 0H18a1 1 0 0 1 1 1v3.2a2.3 2.3 0 1 1 0 4.6V18a1 1 0 0 1-1 1h-3.2a2.3 2.3 0 1 0-4.6 0H7a1 1 0 0 1-1-1v-3.2a2.3 2.3 0 1 0 0-4.6V7a1 1 0 0 1 1-1z"/></svg></span>「<span class="key">機能拡張を管理</span>」を押す</li>
-        <li>「<span class="key">おすすめ・ショート非表示</span>」をオンにして「完了」</li>
+        <li><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を</span><span class="nw">オンにして「完了」</span></li>
       </ol>
     </div></li>
-    <li><span class="num">2</span><div class="body">
-      <b>YouTubeで「常に許可」を押す</b>
+    <li><div class="body">
+      <b class="ttl"><span class="num">2</span>YouTubeで「常に許可」を押す</b>
       <!-- 拡張機能をオンにしても、YouTubeのサイトは「確認」のままのことが多い。許可するにはYouTubeを開く必要があるので、目的が分かる名前のボタンにする -->
       <a class="btn" id="allow" href="https://m.youtube.com/?noapp=1">YouTubeを開いて許可する</a>
       <ol class="flow">
-        <li>YouTubeの画面で、アドレスバーのボタンを押す</li>
-        <li>「<span class="key">おすすめ・ショート非表示</span>」を押す</li>
+        <li><span class="nw">YouTubeの画面で、</span><span class="nw">アドレスバーのボタンを押す</span></li>
+        <li><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を押す</span></li>
         <li>「<span class="key">常に許可…</span>」を押す
           <div class="dlg" aria-hidden="true">
             <p class="dt">“おすすめ・ショート非表示”がm.youtube.comへのアクセスを求めています。</p>
@@ -145,7 +149,7 @@
             <span class="db">キャンセル</span>
           </div>
         </li>
-        <li>「<span class="key">常に許可</span>」をもう一度押す（どちらでもOK）
+        <li><span class="nw">「<span class="key">常に許可</span>」をもう一度押す</span><span class="nw">（どちらでもOK）</span>
           <div class="dlg" aria-hidden="true">
             <p class="dt">“おすすめ・ショート非表示”を常に許可してもよろしいですか?</p>
             <span class="hitgroup">
@@ -157,8 +161,8 @@
         </li>
       </ol>
     </div></li>
-    <li><span class="num">3</span><div class="body">
-      <b>おすすめとショートが消えたら完了</b>
+    <li><div class="body">
+      <b class="ttl"><span class="num">3</span>おすすめとショートが消えたら完了</b>
     </div></li>
   </ol>
   </div>
@@ -169,8 +173,8 @@
   <details class="trouble" id="trouble">
     <summary>設定できませんか？</summary>
     <ul class="cases">
-      <li><div class="case">アプリやiOSを更新した・入れ直したあと、うまく動かない</div><div class="fix"><b>対策</b>「設定」アプリ →「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」を一度オフにして、もう一度オンにする</div></li>
-      <li><div class="case">前から開いていたYouTubeのタブで、おすすめやショートが出る</div><div class="fix"><b>対策</b>そのタブを閉じて、アプリの「SafariでYouTubeを開く」から開き直す</div></li>
+      <li><div class="case">アプリやiOSを更新した・入れ直したあと、うまく動かない</div><div class="fix"><b>対策</b><span class="nw">「設定」アプリ →</span><span class="nw">「アプリ」→</span><span class="nw">「Safari」→</span><span class="nw">「機能拡張」→</span><span class="nw">「おすすめ・ショート非表示」を</span><span class="nw">一度オフにして、</span><span class="nw">もう一度オンにする</span></div></li>
+      <li><div class="case">前から開いていたYouTubeのタブで、おすすめやショートが出る</div><div class="fix"><b>対策</b><span class="nw">そのタブを閉じて、</span><span class="nw">アプリの「SafariでYouTubeを開く」から</span><span class="nw">開き直す</span></div></li>
       <li><div class="case">上のどれをしても直らない</div><div class="fix"><b>対策</b>アプリの「ご不満・ご要望」から教えてください。すぐ直します</div></li>
     </ul>
   </details>
