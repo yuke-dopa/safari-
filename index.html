@@ -79,7 +79,7 @@
   <a class="quick" id="quick" href="setup.html"><span id="quickText">拡張機能をまだ設定していない方は</span><b id="quickBtn">設定する ›</b></a>
 
   <div class="help" id="help" hidden>
-    <b id="helpTitle">拡張機能がオフになっているかもしれません</b>
+    <b id="helpTitle">オンにするには</b>
     <p id="helpBody">iPhoneの「設定」→「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」をオンにして、「youtube.com」を「許可」にしてください。</p>
     <a class="btn" id="setup" href="setup.html">設定を確かめる</a>
     <a class="btn sub" id="go" href="https://m.youtube.com/?noapp=1">このままYouTubeを開く</a>
@@ -96,7 +96,7 @@
     document.getElementById("appName").textContent = "No Recs & Shorts";
     document.getElementById("title").textContent = "Getting YouTube ready";
     document.getElementById("lead").textContent = "YouTube opens automatically once recommendations and Shorts are hidden.";
-    document.getElementById("helpTitle").textContent = "The extension may be turned off";
+    document.getElementById("helpTitle").textContent = "How to turn it on";
     document.getElementById("helpBody").textContent = "Open Settings → Apps → Safari → Extensions → No Recs & Shorts, turn it on, and set youtube.com to Allow.";
     document.getElementById("go").textContent = "Open YouTube anyway";
     document.getElementById("setup").textContent = "Check the setup";
@@ -117,19 +117,29 @@
   var dest = "https://m.youtube.com" + to + (to.indexOf("?") >= 0 ? "&" : "?") + "noapp=1";
   document.getElementById("go").href = DEMO ? "#" : dest;
 
-  // 拡張機能が動き出したかを、見えない小さな枠（YouTubeの文字だけのページ）で確かめる
-  var ready = false;
+  // 拡張機能が動き出したかを、見えない小さな枠（YouTubeの文字だけのページ）で確かめる。
+  // Safariを開いた直後は拡張機能の準備が遅れることがあるので、0.8秒ごとに新しい枠で確かめ直す（準備ができたらすぐ分かる）
+  var ready = false, firstLoadAt = 0, frameEl = null;
   window.addEventListener("message", function (e) {
     if (e.origin === "https://m.youtube.com" && e.data === "osh-ready") ready = true;
   });
-  if (!DEMO) {
-    var f = document.createElement("iframe");
-    f.className = "probe";
-    f.setAttribute("aria-hidden", "true");
-    f.setAttribute("tabindex", "-1");
-    f.src = "https://m.youtube.com/robots.txt#osh-ping";
-    document.body.appendChild(f);
+  function probe() {
+    if (ready || DEMO) return;
+    if (frameEl) frameEl.remove();
+    frameEl = document.createElement("iframe");
+    frameEl.className = "probe";
+    frameEl.setAttribute("aria-hidden", "true");
+    frameEl.setAttribute("tabindex", "-1");
+    frameEl.addEventListener("load", function () { if (!firstLoadAt) firstLoadAt = performance.now(); });
+    frameEl.src = "https://m.youtube.com/robots.txt#osh-ping";
+    document.body.appendChild(frameEl);
   }
+  probe();
+  var probeTimer = setInterval(function () { if (ready) clearInterval(probeTimer); else probe(); }, 800);
+  // アプリが渡す「拡張機能が最後に動いてから何分たったか」。最近動いていれば、Safariの準備はできているはずなので、早めに案内を出す
+  var seenMin = -1;
+  try { var sm = new URLSearchParams(location.search).get("seen"); if (sm !== null && sm !== "") seenMin = Number(sm); } catch (e) { seenMin = -1; }
+  var helpWait = seenMin >= 0 && seenMin < 30 ? 1200 : 2500; // 確かめるページが読み込まれてから、この時間返事がなければ案内を出す
 
   // 進み具合：準備ができるまでは、だんだんゆっくり9割に近づく。できたら100%まで進めて、YouTubeへ
   var bar = document.getElementById("bar");
@@ -153,24 +163,32 @@
     pctEl.textContent = n;
     ring.setAttribute("aria-valuenow", n);
 
-    // 12秒たっても拡張機能から知らせが来なければ、オフかもしれないので案内を出す（円は灰色にする）。Safariを開いた直後は準備に7〜10秒かかることがある
-    if (!ready && !helpShown && el > 12000) {
+    // 確かめるページが読み込まれてから少し（最近動いていたなら1.2秒、それ以外は2.5秒）たっても返事がなければ、
+    // 拡張機能がオフかもしれないので、すぐ案内を出す（読み込み自体が遅いときは、開いてから4秒で出す）。円は灰色にする
+    var noAnswer = firstLoadAt ? now - firstLoadAt > helpWait : el > 4000;
+    if (!ready && !helpShown && noAnswer) {
       helpShown = true;
       document.getElementById("help").hidden = false;
       document.getElementById("quick").hidden = true;
       ring.classList.add("stop");
-      document.getElementById("title").textContent = ja ? "まだ準備ができていません" : "Not ready yet";
-      document.getElementById("lead").textContent = ja ? "拡張機能がオフになっているかもしれません。このまま待つと、準備ができしだいYouTubeが開きます" : "The extension may be off. If you wait, YouTube opens as soon as it's ready.";
+      document.getElementById("title").textContent = ja ? "拡張機能がオフになっていませんか？" : "Is the extension turned off?";
+      document.getElementById("lead").textContent = ja ? "オンになっていれば、準備ができしだい、このままYouTubeが開きます" : "If it's on, YouTube opens as soon as it's ready.";
     }
-    // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備に10秒ほどかかることがある）
+    // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備が遅れることがある）
     if (ready && helpShown) { ring.classList.remove("stop"); document.getElementById("help").hidden = true; }
     if (ready) document.getElementById("quick").hidden = true;
+    // 準備ができたら、円の動きを待たずに、すぐYouTubeへ
+    if (ready && !DEMO && shown < 1) {
+      shown = 1;
+      bar.style.strokeDashoffset = "0";
+      pctEl.textContent = "100";
+    }
     if (shown === 1 && !done) {
       done = true;
       setTimeout(function () {
         if (DEMO) { t0 = performance.now(); shown = 0; done = false; ready = false; requestAnimationFrame(frame); return; }
         location.replace(dest);
-      }, DEMO ? 1400 : 120);
+      }, DEMO ? 1400 : 60);
       if (!DEMO) return;
       return;
     }
