@@ -135,12 +135,12 @@
   .dlg .hit, .dlg .hitgroup { outline: 3px solid #ff3b30; outline-offset: 3px; }
   .dlg .hitgroup { display: flex; flex-direction: column; gap: 7px; border-radius: 22px; }
   .marks { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--sub); }
-  .mark { width: 40px; height: 40px; box-sizing: border-box; border-radius: 11px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); display: inline-flex; align-items: center; justify-content: center; font: 800 16px/1 var(--font); }
+  .mark { width: 34px; height: 40px; box-sizing: border-box; border: 0; background: transparent; color: var(--fg); display: inline-flex; align-items: center; justify-content: center; font: 800 16px/1 var(--font); }
   .mark svg { width: 24px; height: 24px; }
   /* パズルのマーク（拡張機能のしるし）。最後はこれを押せばよい、と分かるように青い枠で目立たせる */
-  .mark.puzzle { border-color: var(--accent); color: var(--accent); }
+  .mark.puzzle { color: var(--accent); }
   .withicon { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .mini { display: inline-flex; width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--accent); color: var(--accent); align-items: center; justify-content: center; }
+  .mini { display: inline-flex; width: 24px; height: 28px; border: 0; color: var(--accent); align-items: center; justify-content: center; }
   .mini svg { width: 18px; height: 18px; }
   /* 画面の下の矢印。押しても何も起きない（下のボタンに指が届かないようにする） */
   .pointer {
