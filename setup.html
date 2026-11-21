@@ -65,6 +65,11 @@
     background: linear-gradient(to bottom, transparent, var(--bg) 28%); pointer-events: none; z-index: 9;
   }
   /* 手順1の中の「［▭］または［ぁあ］または［パズル］」。iOSや端末によってボタンの形が違うので、全部の形を見せる */
+  /* 手順の中の小さな流れ。番号の代わりに「→」でつなぐ */
+  .flow { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5; }
+  .flow > li { position: relative; padding-left: 18px; }
+  .flow > li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 800; }
+  .flow .marks { margin-top: 6px; }
   .marks { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--sub); }
   .mark { width: 40px; height: 40px; box-sizing: border-box; border-radius: 11px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); display: inline-flex; align-items: center; justify-content: center; font: 800 16px/1 var(--font); }
   .mark svg { width: 24px; height: 24px; }
@@ -103,23 +108,33 @@
   <h1>3ステップで設定できます</h1>
   <ol class="steps">
     <li><span class="num">1</span><div class="body">
-      <b>アドレスバーのボタンを押す</b>
-      <span class="marks">
-        <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="3" width="16" height="10" rx="2.5"/><line x1="4" y1="17.5" x2="20" y2="17.5"/><line x1="4" y1="21.5" x2="14" y2="21.5"/></svg></span>
-        <span>または</span>
-        <span class="mark">ぁあ</span>
-        <span>または</span>
-        <span class="mark puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M7 6h3.2a2.3 2.3 0 1 1 4.6 0H18a1 1 0 0 1 1 1v3.2a2.3 2.3 0 1 1 0 4.6V18a1 1 0 0 1-1 1h-3.2a2.3 2.3 0 1 0-4.6 0H7a1 1 0 0 1-1-1v-3.2a2.3 2.3 0 1 0 0-4.6V7a1 1 0 0 1 1-1z"/></svg></span>
-      </span>
-      <span class="d">パズルのマークが見えていれば、それを押してください。</span>
+      <b>拡張機能をオンにする</b>
+      <ol class="flow">
+        <li>アドレスバーのボタンを押す
+          <span class="marks">
+            <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="3" width="16" height="10" rx="2.5"/><line x1="4" y1="17.5" x2="20" y2="17.5"/><line x1="4" y1="21.5" x2="14" y2="21.5"/></svg></span>
+            <span>または</span>
+            <span class="mark">ぁあ</span>
+            <span>または</span>
+            <span class="mark puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M7 6h3.2a2.3 2.3 0 1 1 4.6 0H18a1 1 0 0 1 1 1v3.2a2.3 2.3 0 1 1 0 4.6V18a1 1 0 0 1-1 1h-3.2a2.3 2.3 0 1 0-4.6 0H7a1 1 0 0 1-1-1v-3.2a2.3 2.3 0 1 0 0-4.6V7a1 1 0 0 1 1-1z"/></svg></span>
+          </span>
+        </li>
+        <li class="withicon"><span class="mini puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M7 6h3.2a2.3 2.3 0 1 1 4.6 0H18a1 1 0 0 1 1 1v3.2a2.3 2.3 0 1 1 0 4.6V18a1 1 0 0 1-1 1h-3.2a2.3 2.3 0 1 0-4.6 0H7a1 1 0 0 1-1-1v-3.2a2.3 2.3 0 1 0 0-4.6V7a1 1 0 0 1 1-1z"/></svg></span>「<span class="key">機能拡張を管理</span>」を押す</li>
+        <li>「<span class="key">おすすめ・ショート非表示</span>」をオンにして「完了」</li>
+      </ol>
     </div></li>
     <li><span class="num">2</span><div class="body">
-      <b class="withicon"><span class="mini puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M7 6h3.2a2.3 2.3 0 1 1 4.6 0H18a1 1 0 0 1 1 1v3.2a2.3 2.3 0 1 1 0 4.6V18a1 1 0 0 1-1 1h-3.2a2.3 2.3 0 1 0-4.6 0H7a1 1 0 0 1-1-1v-3.2a2.3 2.3 0 1 0 0-4.6V7a1 1 0 0 1 1-1z"/></svg></span>「<span class="key">機能拡張を管理</span>」を押す</b>
-      <span class="d">パズルのマークが付いた項目です。</span>
+      <b>YouTubeで「常に許可」を押す</b>
+      <!-- 拡張機能をオンにしても、YouTubeのサイトは「確認」のままのことが多い。許可するにはYouTubeを開く必要があるので、目的が分かる名前のボタンにする -->
+      <a class="btn" id="allow" href="https://m.youtube.com/?noapp=1">YouTubeを開いて許可する</a>
+      <ol class="flow">
+        <li>YouTubeの画面で、アドレスバーのボタンを押す</li>
+        <li>「<span class="key">おすすめ・ショート非表示</span>」を押す</li>
+        <li>「<span class="key">常に許可</span>」を押す</li>
+      </ol>
     </div></li>
     <li><span class="num">3</span><div class="body">
-      <b>スイッチをオンにして「完了」</b>
-      <!-- 設定できていないうちは「YouTubeを開く」ボタンを出さない（押すと、おすすめが出たままのYouTubeが開いてしまうため） -->
+      <b>おすすめとショートが消えたら完了</b>
     </div></li>
   </ol>
   </div>
@@ -130,7 +145,6 @@
   <details class="trouble" id="trouble">
     <summary>設定できませんか？</summary>
     <ul class="cases">
-      <li><div class="case">オンにしたのに「✅ 設定できています」に変わらない</div><div class="fix"><b>対策</b><a href="https://m.youtube.com/?noapp=1">YouTubeを開いて</a>、アドレスバーのボタン →「<span class="key">おすすめ・ショート非表示</span>」→「<span class="key">常に許可</span>」を押す</div></li>
       <li><div class="case">アプリやiOSを更新した・入れ直したあと、うまく動かない</div><div class="fix"><b>対策</b>「設定」アプリ →「アプリ」→「Safari」→「機能拡張」→「おすすめ・ショート非表示」を一度オフにして、もう一度オンにする</div></li>
       <li><div class="case">前から開いていたYouTubeのタブで、おすすめやショートが出る</div><div class="fix"><b>対策</b>そのタブを閉じて、アプリの「SafariでYouTubeを開く」から開き直す</div></li>
       <li><div class="case">上のどれをしても直らない</div><div class="fix"><b>対策</b>アプリの「ご不満・ご要望」から教えてください。すぐ直します</div></li>
