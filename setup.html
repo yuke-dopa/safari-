@@ -74,6 +74,15 @@
   .nw { display: inline-block; }
   .flow > li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 800; }
   .flow .marks { margin-top: 6px; }
+  .backnote { margin: 4px 0 0; font-size: 13px; line-height: 1.6; color: var(--sub); }
+  .backnote b { color: var(--fg); font-size: 15px; }
+  /* Safariのメニューの見本（写真の手書きを整えたもの） */
+  .menu { margin-top: 8px; max-width: 280px; background: #2a2a2c; border-radius: 18px; padding: 0 14px 12px; display: flex; flex-direction: column; }
+  .menu .mline { display: block; height: 1px; background: rgba(255,255,255,0.18); margin: 0 0 10px 40px; }
+  .menu .mrow { display: flex; align-items: center; gap: 12px; color: #fff; font-size: 15px; font-weight: 600; padding: 6px 8px; border-radius: 12px; }
+  .menu .mic { flex: 0 0 26px; height: 26px; border-radius: 6px; background: linear-gradient(#e9e9ec, #bdbdc2); position: relative; }
+  .menu .mic::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff, #d6d6da); box-shadow: 0 0 0 1px rgba(0,0,0,0.12); }
+  .menu .hit { outline: 3px solid #ff3b30; outline-offset: 2px; }
   .fin { margin: 10px 0 0; font-size: 14px; font-weight: 700; color: var(--ok); }
   /* iPhoneに出る確認画面の見本（写真の手書きを整えたもの） */
   .dlg { margin-top: 8px; max-width: 280px; background: #1c1c1e; border-radius: 18px; padding: 14px 12px 12px; display: flex; flex-direction: column; gap: 7px; }
@@ -138,10 +147,15 @@
     <li><div class="body">
       <b class="ttl"><span class="num">2</span>YouTubeで「常に許可」を押す</b>
       <!-- 拡張機能をオンにしても、YouTubeのサイトは「確認」のままのことが多い。許可するにはYouTubeを開く必要があるので、目的が分かる名前のボタンにする -->
-      <a class="btn" id="allow" href="https://m.youtube.com/?noapp=1">YouTubeを開いて許可する</a>
       <ol class="flow">
         <li><span class="nw">YouTubeの画面で、</span><span class="nw">アドレスバーのボタンを押す</span></li>
-        <li><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を押す</span></li>
+        <li><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を押す</span>
+          <!-- メニューの見本（写真を描き直したもの）。まだ許可していないので、アイコンは灰色 -->
+          <div class="menu" aria-hidden="true">
+            <span class="mline"></span>
+            <span class="mrow hit"><span class="mic"></span>おすすめ・ショート非表示</span>
+          </div>
+        </li>
         <li>「<span class="key">常に許可…</span>」を押す
           <div class="dlg" aria-hidden="true">
             <p class="dt">“おすすめ・ショート非表示”がm.youtube.comへのアクセスを求めています。</p>
@@ -161,6 +175,9 @@
           </div>
         </li>
       </ol>
+      <!-- 手順を読んでから押せるよう、ボタンは手順の下に置く。新しいタブで開くので、Safariの「‹」（戻る）でこのページに戻れる -->
+      <a class="btn" id="allow" href="https://m.youtube.com/?noapp=1#osh-setup" target="_blank" rel="opener">YouTubeを開いて許可する</a>
+      <p class="backnote">YouTubeは新しいタブで開きます。手順を見直すときは、Safariの「<b>‹</b>」（戻る）で、このページに戻れます</p>
       <p class="fin">おすすめとショートが消えたら、設定は完了です</p>
     </div></li>
   </ol>
