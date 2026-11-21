@@ -58,10 +58,15 @@
     position: fixed; left: 0; right: 0; bottom: 0; height: calc(env(safe-area-inset-bottom, 0px) + 80px);
     background: linear-gradient(to bottom, transparent, var(--bg) 28%); pointer-events: none; z-index: 9;
   }
-  /* 手順1の中の「［▭］または［ぁあ］」。iOSによってボタンの形が違うので、両方の形を見せる */
+  /* 手順1の中の「［▭］または［ぁあ］または［パズル］」。iOSや端末によってボタンの形が違うので、全部の形を見せる */
   .marks { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--sub); }
   .mark { width: 40px; height: 40px; box-sizing: border-box; border-radius: 11px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); display: inline-flex; align-items: center; justify-content: center; font: 800 16px/1 var(--font); }
   .mark svg { width: 24px; height: 24px; }
+  /* パズルのマーク（拡張機能のしるし）。最後はこれを押せばよい、と分かるように青い枠で目立たせる */
+  .mark.puzzle { border-color: var(--accent); color: var(--accent); }
+  .withicon { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .mini { display: inline-flex; width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--accent); color: var(--accent); align-items: center; justify-content: center; }
+  .mini svg { width: 18px; height: 18px; }
   /* 画面の下の矢印。押しても何も起きない（下のボタンに指が届かないようにする） */
   .pointer {
     position: fixed; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom, 0px) - 40px);
@@ -97,14 +102,17 @@
         <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="3" width="16" height="10" rx="2.5"/><line x1="4" y1="17.5" x2="20" y2="17.5"/><line x1="4" y1="21.5" x2="14" y2="21.5"/></svg></span>
         <span>または</span>
         <span class="mark">ぁあ</span>
+        <span>または</span>
+        <span class="mark puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M7 6h3.2a2.3 2.3 0 1 1 4.6 0H18a1 1 0 0 1 1 1v3.2a2.3 2.3 0 1 1 0 4.6V18a1 1 0 0 1-1 1h-3.2a2.3 2.3 0 1 0-4.6 0H7a1 1 0 0 1-1-1v-3.2a2.3 2.3 0 1 0 0-4.6V7a1 1 0 0 1 1-1z"/></svg></span>
       </span>
+      <span class="d">パズルのマークが見えていれば、それを押してください。</span>
     </div></li>
     <li><span class="num">2</span><div class="body">
-      <b>「<span class="key">機能拡張を管理</span>」を押す</b>
+      <b class="withicon"><span class="mini puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M7 6h3.2a2.3 2.3 0 1 1 4.6 0H18a1 1 0 0 1 1 1v3.2a2.3 2.3 0 1 1 0 4.6V18a1 1 0 0 1-1 1h-3.2a2.3 2.3 0 1 0-4.6 0H7a1 1 0 0 1-1-1v-3.2a2.3 2.3 0 1 0 0-4.6V7a1 1 0 0 1 1-1z"/></svg></span>「<span class="key">機能拡張を管理</span>」を押す</b>
+      <span class="d">パズルのマークが付いた項目です。</span>
     </div></li>
     <li><span class="num">3</span><div class="body">
       <b>スイッチをオンにして「完了」</b>
-      <span class="d">「おすすめ・ショート非表示」のスイッチを押して緑にします。設定できると、この画面が自動で「✅ 設定できています」に変わり、YouTubeを開くボタンが出ます。</span>
       <!-- 設定できていないうちは「YouTubeを開く」ボタンを出さない（押すと、おすすめが出たままのYouTubeが開いてしまうため） -->
     </div></li>
   </ol>
