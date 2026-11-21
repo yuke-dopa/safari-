@@ -74,6 +74,9 @@
   .nw { display: inline-block; }
   .flow > li::before { content: "【" counter(fl) "】"; position: absolute; left: -7px; top: 1px; color: var(--accent); font-weight: 800; font-size: 13px; letter-spacing: -0.08em; }
   .flow .marks { margin-top: 0; }
+  /* オンにしたスイッチの絵（iPhoneのスイッチと同じ見た目） */
+  .sw { display: inline-block; vertical-align: middle; position: relative; width: 44px; height: 26px; margin-left: 4px; border-radius: 13px; background: #34c759; }
+  .sw::after { content: ""; position: absolute; top: 2px; right: 2px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
   .flow .where { display: block; margin-top: 2px; font-size: 13px; color: var(--sub); }
   .backnote { margin: 4px 0 0; font-size: 13px; line-height: 1.6; color: var(--sub); }
   .backnote b { color: var(--fg); font-size: 15px; }
@@ -186,7 +189,7 @@
           <span class="where">（上部or下部のアドレスバー）</span>
         </li>
         <li class="withicon"><span class="mini puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 5H14.7a2.5 2.5 0 0 1 2.5 2.5V9.7a2.3 2.3 0 1 1 0 4.6V16.5a2.5 2.5 0 0 1-2.5 2.5H6.8a2.5 2.5 0 0 1-2.5-2.5V14.3a2.3 2.3 0 1 0 0-4.6V7.5a2.5 2.5 0 0 1 2.5-2.5z"/></svg></span>「<span class="key">機能拡張を管理</span>」を押す</li>
-        <li><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を</span><span class="nw">オンにする</span></li>
+        <li><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を</span><span class="sw" role="img" aria-label="オン"></span></li>
       </ol>
     </div></li>
     <li><div class="body">
