@@ -132,6 +132,10 @@
   .demosteps > li::before { left: -1px; top: 3px; }
   .demosteps > li.cur { background: rgba(37, 99, 235, 0.14); }
   .demosteps .sub { display: block; font-size: 12px; color: var(--sub); }
+  /* 前半・後半の切り替え */
+  .prev { align-self: flex-start; font-size: 14px; font-weight: 700; color: var(--accent); text-decoration: none; margin-bottom: 4px; display: inline-block; }
+  #p1, #p2 { display: flex; flex-direction: column; gap: 6px; }
+  #p1 .btn { margin-top: 12px; }
   .fin { margin: 10px 0 0; font-size: 14px; font-weight: 700; color: var(--ok); }
   /* iPhoneに出る確認画面の見本（写真の手書きを整えたもの） */
   .dlg { margin-top: 8px; max-width: 280px; background: #1c1c1e; border-radius: 18px; padding: 14px 12px 12px; display: flex; flex-direction: column; gap: 7px; }
@@ -175,9 +179,11 @@
 <body>
 <main class="wrap" id="main">
   <div class="wrap" id="steps">
-  <h1>7ステップで設定できます</h1>
+  <h1 id="h1">まず、拡張機能をオンにします</h1>
   <ol class="steps">
     <li><div class="body">
+      <!-- 前半（1〜3）：拡張機能をオンにする。できたら「次へ」で後半（4〜7）のページに進む -->
+      <section id="p1">
       <ol class="flow">
         <li>
           <span class="marks">
@@ -192,6 +198,12 @@
         <li class="withicon"><span class="mini puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 5H14.7a2.5 2.5 0 0 1 2.5 2.5V9.7a2.3 2.3 0 1 1 0 4.6V16.5a2.5 2.5 0 0 1-2.5 2.5H6.8a2.5 2.5 0 0 1-2.5-2.5V14.3a2.3 2.3 0 1 0 0-4.6V7.5a2.5 2.5 0 0 1 2.5-2.5z"/></svg></span>「<span class="key">機能拡張を管理</span>」を押す</li>
         <li><span class="nw">「<span class="key">おすすめ・ショート非表示</span>」を</span><span class="sw" role="img" aria-label="オン"></span></li>
       </ol>
+      <a class="btn" id="next" href="#next">オンにできたら、次へ ›</a>
+      </section>
+      <!-- 後半（4〜7）：YouTubeで「常に許可」を押す。拡張機能がオンになっていても、許可するまではYouTubeで動けないので、
+           ページを開いたままでは「できた」が分からない。押すと、前半を隠してこちらを出す（#next） -->
+      <section id="p2" hidden>
+      <a class="prev" href="#start">‹ 1〜3の手順に戻る</a>
       <!-- 拡張機能をオンにしても、YouTubeのサイトは「確認」のままのことが多い。許可するにはYouTubeを開く必要があるので、目的が分かる名前のボタンにする -->
       <!-- 動く見本：YouTubeの画面に似せた絵の上で、押す場所を指のマークが順番に示す（写真3枚を描き直したもの）。
            許可するまで拡張機能はYouTubeの中で何もできないので、YouTubeに行く前にここで押す場所を覚えてもらう -->
@@ -216,6 +228,7 @@
       <a class="btn" id="allow" href="https://m.youtube.com/?noapp=1#osh-setup" target="_blank" rel="opener">YouTubeを開いて許可する</a>
       <p class="backnote">YouTubeは新しいタブで開きます。手順を見直すときは、Safariの「<b>‹</b>」（戻る）で、このページに戻れます</p>
       <p class="fin">おすすめとショートが消えたら、設定は完了です</p>
+      </section>
     </div></li>
   </ol>
   </div>
@@ -297,8 +310,21 @@
     for (var k = 0; k < items.length; k++) {
       items[k].addEventListener("click", function () { go(Number(this.getAttribute("data-s"))); });
     }
+    window.__demoGo = go;
     go(0);
   })();
+
+  // 前半（1〜3）と後半（4〜7）を、URLの #next で切り替える（ページを読み直さないので、Safariの「‹」で前半に戻れる）
+  function part() {
+    var two = location.hash === "#next";
+    document.getElementById("p1").hidden = two;
+    document.getElementById("p2").hidden = !two;
+    document.getElementById("h1").textContent = two ? "次に、YouTubeで許可します" : "まず、拡張機能をオンにします";
+    if (location.hash === "#next" || location.hash === "#start") window.scrollTo(0, 0);
+    if (two && window.__demoGo) window.__demoGo(0);
+  }
+  window.addEventListener("hashchange", part);
+  part();
 
   // 「うまく消えないとき」から来たら（#trouble）、直し方を開いて見せる
   if (location.hash === "#trouble") {
