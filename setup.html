@@ -74,6 +74,14 @@
   .pointer .arrows i:nth-child(6) { animation-delay: .5s; } .pointer .arrows i:nth-child(7) { animation-delay: .6s; }
   @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
   @media (prefers-reduced-motion: reduce) { .pointer .arrows i { animation: none; } }
+
+  /* iPad：Safariのアドレスバーは画面の上にあるので、矢印を上に出して上を指す */
+  html.ipad body { padding-block: 100px 40px; }
+  html.ipad .band { top: 0; bottom: auto; height: calc(env(safe-area-inset-top, 0px) + 80px); background: linear-gradient(to top, transparent, var(--bg) 28%); }
+  html.ipad .pointer { top: calc(env(safe-area-inset-top, 0px) + 2px); bottom: auto; }
+  html.ipad .pointer .arrows { align-items: flex-start; padding: 4px 4px 0; max-width: 640px; margin: 0 auto; }
+  html.ipad .pointer .arrows i { animation-name: bobUp; }
+  @keyframes bobUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 </style>
 </head>
 <body>
@@ -138,6 +146,13 @@
   probe();
   setInterval(probe, 1000);
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") probe(); });
+
+  // iPad（Safariのアドレスバーが上にある）なら、矢印を上向きにする。新しいiPadは「Mac」と名乗るので、指で触れるかでも見分ける
+  var isPad = /iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  if (isPad) {
+    document.documentElement.classList.add("ipad");
+    document.querySelectorAll(".pointer .arrows i").forEach(function (i) { i.textContent = "↑"; });
+  }
 
   // 「うまく消えないとき」から来たら（#trouble）、直し方を開いて見せる
   if (location.hash === "#trouble") {
