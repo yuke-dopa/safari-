@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>YouTubeの準備中</title>
+<title>おすすめ・ショートを隠しています</title>
 <style>
   /* 一枚の画面：まん中に、アプリのアイコン・進み具合の円・ひとこと。アプリと同じ配色 */
   :root {
@@ -45,6 +45,7 @@
   .ring .pct small { font-size: 15px; font-weight: 600; margin-left: 2px; color: var(--sub); }
 
   h1 { margin: 0; font-size: 19px; font-weight: 700; text-wrap: balance; }
+  h1 .nw { display: inline-block; white-space: nowrap; }
 
 
   .help { width: 100%; background: var(--card); border-radius: 14px; padding: 16px; box-sizing: border-box; text-align: left; display: flex; flex-direction: column; gap: 10px; }
@@ -75,7 +76,7 @@
     <div class="pct"><span id="pct">0</span><small>%</small></div>
   </div>
 
-  <h1 id="title">YouTubeを準備しています</h1>
+  <h1 id="title"><span class="nw">おすすめ・ショートを</span><span class="nw">隠す処理をしています</span></h1>
   <!-- 設定へのボタンは、これ1つだけ。最初から出しておき、オフらしいと分かったら目立たせる -->
   <a class="btn" id="setup" href="setup.html">拡張機能を設定する</a>
 </main>
@@ -88,7 +89,7 @@
   if (!ja) {
     document.documentElement.lang = "en";
     document.getElementById("appName").textContent = "No Recs & Shorts";
-    document.getElementById("title").textContent = "Getting YouTube ready";
+    document.getElementById("title").textContent = "Hiding recommendations and Shorts…";
     document.getElementById("setup").textContent = "Set up the extension";
     document.title = "Getting YouTube ready";
   } else {
