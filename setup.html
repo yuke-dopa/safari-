@@ -174,6 +174,7 @@
   html.ipad .pointer .arrows { align-items: flex-start; padding: 4px 4px 0; max-width: 640px; margin: 0 auto; }
   html.ipad .pointer .arrows i { animation-name: bobUp; }
   @keyframes bobUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  .trouble .tt { margin: 10px 0 4px; font-size: 15px; font-weight: 800; }
 </style>
 </head>
 <body>
@@ -237,10 +238,13 @@
     <!-- アプリから「Safariで確かめる」で来たときのために、アプリに戻る入口（アプリのURLの名前 osusumehide://） -->
     <a class="btn sub2" href="osusumehide://">アプリに戻る</a></div>
   <details class="trouble" id="trouble">
-    <summary>設定できませんか？</summary>
+    <summary>表示が反映されませんか？</summary>
+    <p class="tt">うまく表示設定が反映されないときの対策</p>
     <ul class="cases">
-      <li><div class="case">アプリやiOSを更新した・入れ直したあと、うまく動かない</div><div class="fix"><b>対策</b><span class="nw">「設定」アプリ →</span><span class="nw">「アプリ」→</span><span class="nw">「Safari」→</span><span class="nw">「機能拡張」→</span><span class="nw">「おすすめ・ショート非表示 for Y」を</span><span class="nw">一度オフにして、</span><span class="nw">もう一度オンにする</span></div></li>
-      <li><div class="case">前から開いていたYouTubeのタブで、おすすめやショートが出る</div><div class="fix"><b>対策</b><span class="nw">そのタブを閉じて、</span><span class="nw">アプリの「SafariでYouTubeを開く」から</span><span class="nw">開き直す</span></div></li>
+      <li><div class="case">アプリで「登録チャンネル」や「コメント欄」の表示を変えたのに、YouTubeの画面が変わらない</div><div class="fix"><b>対策</b><span class="nw">YouTubeのページを</span><span class="nw">読み込み直す（アドレスバーの ↻）</span></div></li>
+      <li><div class="case">前から開いていたYouTubeのタブで、表示が変わらない</div><div class="fix"><b>対策</b><span class="nw">そのタブを閉じて、</span><span class="nw">アプリの「SafariでYouTubeを開く」から</span><span class="nw">開き直す</span></div></li>
+      <li><div class="case">おすすめやショートも出ている（拡張機能が止まっているかもしれない）</div><div class="fix"><b>対策</b><span class="nw">「設定」アプリ →</span><span class="nw">「アプリ」→</span><span class="nw">「Safari」→</span><span class="nw">「機能拡張」→</span><span class="nw">「おすすめ・ショート非表示 for Y」が</span><span class="nw">オンになっているか確かめる</span></div></li>
+      <li><div class="case">アプリやiOSを更新した・入れ直したあと、うまく動かない</div><div class="fix"><b>対策</b><span class="nw">上と同じ場所で、</span><span class="nw">「おすすめ・ショート非表示 for Y」を</span><span class="nw">一度オフにして、</span><span class="nw">もう一度オンにする</span></div></li>
       <li><div class="case">上のどれをしても直らない</div><div class="fix"><b>対策</b>アプリの「ご不満・ご要望」から教えてください。すぐ直します</div></li>
     </ul>
   </details>
