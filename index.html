@@ -126,7 +126,12 @@
   // アプリが渡す「拡張機能が最後に動いてから何分たったか」。最近動いていれば、Safariの準備はできているはずなので、早めに案内を出す
   var seenMin = -1;
   try { var sm = new URLSearchParams(location.search).get("seen"); if (sm !== null && sm !== "") seenMin = Number(sm); } catch (e) { seenMin = -1; }
-  var helpWait = seenMin >= 0 && seenMin < 30 ? 600 : 1200; // 確かめるページが読み込まれてから、この時間返事がなければ案内を出す
+  // 2026-11-22：一度設定できた人（アプリが seen を渡す）は、Safariを開いた直後に拡張機能の準備が遅れても、
+  // 「オフでは？」とあわてさせない。設定のボタンは最初は出さず、10秒待っても動かないときだけ、落ち着いた文で出す。
+  // まだ設定していない人（seen なし）は、今までどおり早めに案内する
+  var setUpUser = seenMin >= 0;
+  var helpWait = setUpUser ? 10000 : 1200; // 確かめるページが読み込まれてから、この時間返事がなければ案内を出す
+  if (setUpUser) document.getElementById("setup").hidden = true;
 
   // 進み具合：準備ができるまでは、だんだんゆっくり9割に近づく。できたら100%まで進めて、YouTubeへ
   var bar = document.getElementById("bar");
@@ -135,7 +140,7 @@
   var C = 2 * Math.PI * 50;
   bar.style.strokeDasharray = C.toFixed(2);
   bar.style.strokeDashoffset = C.toFixed(2);
-  var t0 = performance.now(), last = t0, shown = 0, done = false, helpShown = false;
+  var t0 = performance.now(), last = t0, shown = 0, done = false, helpShown = false, slowShown = false;
   var demoReadyAt = 3800; // 見本では3.8秒で準備できたことにする
 
   function frame(now) {
@@ -152,11 +157,19 @@
 
     // 確かめるページが読み込まれてから少し（最近動いていたなら1.2秒、それ以外は2.5秒）たっても返事がなければ、
     // 拡張機能がオフかもしれないので、すぐ案内を出す（読み込み自体が遅いときは、開いてから4秒で出す）。円は灰色にする
-    var noAnswer = firstLoadAt ? now - firstLoadAt > helpWait : el > 2500;
+    var noAnswer = firstLoadAt ? now - firstLoadAt > helpWait : el > (setUpUser ? 12000 : 2500);
+    // 設定できている人には、3秒たったら「もう少し」とだけ出す（ボタンは出さない）
+    if (setUpUser && !ready && !helpShown && el > 3000 && !slowShown) {
+      slowShown = true;
+      document.getElementById("title").textContent = ja ? "もう少しお待ちください…" : "Almost ready…";
+    }
     if (!ready && !helpShown && noAnswer) {
       helpShown = true;
       ring.classList.add("stop");
-      document.getElementById("title").textContent = ja ? "拡張機能がオフになっていませんか？" : "Is the extension turned off?";
+      document.getElementById("title").textContent = setUpUser
+        ? (ja ? "拡張機能が動いていないようです" : "The extension doesn't seem to be running")
+        : (ja ? "拡張機能がオフになっていませんか？" : "Is the extension turned off?");
+      document.getElementById("setup").hidden = false;
     }
     // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備が遅れることがある）。オンだと分かれば、そのままYouTubeへ
     if (ready) { ring.classList.remove("stop"); document.getElementById("setup").hidden = true; }
