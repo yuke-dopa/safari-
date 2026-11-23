@@ -47,6 +47,7 @@
   h1 { margin: 0; font-size: 19px; font-weight: 700; text-wrap: balance; }
   h1 .nw { display: inline-block; white-space: nowrap; }
   .wait { margin: -6px 0 0; font-size: 15px; color: #8a8a8f; }
+  .wait .nw { display: inline-block; white-space: nowrap; }
 
 
   .help { width: 100%; background: var(--card); border-radius: 14px; padding: 16px; box-sizing: border-box; text-align: left; display: flex; flex-direction: column; gap: 10px; }
@@ -77,8 +78,8 @@
     <div class="pct"><span id="pct">0</span><small>%</small></div>
   </div>
 
-  <h1 id="title"><span class="nw">おすすめ・ショートを</span><span class="nw">隠す処理をしています</span></h1>
-  <p id="wait" class="wait">数秒お待ちください</p>
+  <h1 id="title">数秒お待ちください</h1>
+  <p id="wait" class="wait"><span class="nw">おすすめ・ショートを</span><span class="nw">隠す処理をしています</span></p>
   <!-- 設定へのボタンは、これ1つだけ。最初から出しておき、オフらしいと分かったら目立たせる -->
   <a class="btn" id="setup" href="setup.html">拡張機能を設定する</a>
 </main>
@@ -91,8 +92,8 @@
   if (!ja) {
     document.documentElement.lang = "en";
     document.getElementById("appName").textContent = "No Recs & Shorts";
-    document.getElementById("title").textContent = "Hiding recommendations and Shorts…";
-    document.getElementById("wait").textContent = "Just a few seconds";
+    document.getElementById("title").textContent = "Just a few seconds";
+    document.getElementById("wait").textContent = "Hiding recommendations and Shorts…";
     document.getElementById("setup").textContent = "Set up the extension";
     document.title = "Getting YouTube ready";
   } else {
