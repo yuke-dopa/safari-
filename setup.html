@@ -405,6 +405,8 @@
   var open = document.getElementById("fbOpen"), box = document.getElementById("fbBox");
   var text = document.getElementById("fbText"), send = document.getElementById("fbSend"), done = document.getElementById("fbDone");
   open.addEventListener("click", function () { box.hidden = !box.hidden; if (!box.hidden) text.focus(); });
+  // YouTubeの画面の「ご不満・ご要望」から来たとき（#fb）は、書く欄を開いた状態で見せる
+  if (location.hash === "#fb") { box.hidden = false; setTimeout(function () { document.getElementById("fb").scrollIntoView({ block: "start" }); }, 80); }
   send.addEventListener("click", function () {
     var v = (text.value || "").trim();
     if (!v) { text.focus(); return; }
