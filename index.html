@@ -152,8 +152,9 @@
     var dt = Math.min(64, now - last); last = now;
     var el = now - t0;
     if (DEMO && el > demoReadyAt) ready = true;
-    var target = ready ? 1 : Math.min(0.98, el < 5000 ? 0.85 * el / 5000 : 0.85 + 0.13 * (1 - Math.exp(-(el - 5000) / 9000)));
-    shown += (target - shown) * Math.min(1, dt / (ready ? 90 : 160));
+    // 進み具合：途中でゆっくりにならないよう、10秒で99%まで、ずっと同じ速さで進む（準備ができたら、そこから100%へ）
+    var target = ready ? 1 : Math.min(0.99, el / 10000);
+    shown = ready ? shown + (1 - shown) * Math.min(1, dt / 90) : target;
     if (ready && 1 - shown < 0.004) shown = 1;
     bar.style.strokeDashoffset = (C * (1 - shown)).toFixed(2);
     var n = Math.floor(shown * 100);
