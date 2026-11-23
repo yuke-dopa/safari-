@@ -46,6 +46,7 @@
 
   h1 { margin: 0; font-size: 19px; font-weight: 700; text-wrap: balance; }
   h1 .nw { display: inline-block; white-space: nowrap; }
+  .wait { margin: -6px 0 0; font-size: 15px; color: #8a8a8f; }
 
 
   .help { width: 100%; background: var(--card); border-radius: 14px; padding: 16px; box-sizing: border-box; text-align: left; display: flex; flex-direction: column; gap: 10px; }
@@ -77,6 +78,7 @@
   </div>
 
   <h1 id="title"><span class="nw">おすすめ・ショートを</span><span class="nw">隠す処理をしています</span></h1>
+  <p id="wait" class="wait">数秒お待ちください</p>
   <!-- 設定へのボタンは、これ1つだけ。最初から出しておき、オフらしいと分かったら目立たせる -->
   <a class="btn" id="setup" href="setup.html">拡張機能を設定する</a>
 </main>
@@ -90,6 +92,7 @@
     document.documentElement.lang = "en";
     document.getElementById("appName").textContent = "No Recs & Shorts";
     document.getElementById("title").textContent = "Hiding recommendations and Shorts…";
+    document.getElementById("wait").textContent = "Just a few seconds";
     document.getElementById("setup").textContent = "Set up the extension";
     document.title = "Getting YouTube ready";
   } else {
@@ -123,7 +126,7 @@
     document.body.appendChild(frameEl);
   }
   probe();
-  var probeTimer = setInterval(function () { if (ready) clearInterval(probeTimer); else probe(); }, 800);
+  var probeTimer = setInterval(function () { if (ready) clearInterval(probeTimer); else probe(); }, 300);
   // アプリが渡す「拡張機能が最後に動いてから何分たったか」。最近動いていれば、Safariの準備はできているはずなので、早めに案内を出す
   var seenMin = -1;
   try { var sm = new URLSearchParams(location.search).get("seen"); if (sm !== null && sm !== "") seenMin = Number(sm); } catch (e) { seenMin = -1; }
@@ -148,7 +151,7 @@
     var dt = Math.min(64, now - last); last = now;
     var el = now - t0;
     if (DEMO && el > demoReadyAt) ready = true;
-    var target = ready ? 1 : 0.9 * (1 - Math.exp(-el / 2600));
+    var target = ready ? 1 : Math.min(0.98, el < 5000 ? 0.85 * el / 5000 : 0.85 + 0.13 * (1 - Math.exp(-(el - 5000) / 9000)));
     shown += (target - shown) * Math.min(1, dt / (ready ? 90 : 160));
     if (ready && 1 - shown < 0.004) shown = 1;
     bar.style.strokeDashoffset = (C * (1 - shown)).toFixed(2);
@@ -171,6 +174,7 @@
         ? (ja ? "拡張機能が動いていないかもしれません" : "The extension may not be running")
         : (ja ? "拡張機能がオフになっていませんか？" : "Is the extension turned off?");
       document.getElementById("setup").hidden = false;
+      document.getElementById("wait").hidden = true; // 案内を出したら「数秒お待ちください」は消す
     }
     // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備が遅れることがある）。オンだと分かれば、そのままYouTubeへ
     if (ready) { ring.classList.remove("stop"); document.getElementById("setup").hidden = true; }

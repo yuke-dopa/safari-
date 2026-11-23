@@ -175,6 +175,21 @@
   html.ipad .pointer .arrows i { animation-name: bobUp; }
   @keyframes bobUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
   .trouble .tt { margin: 10px 0 4px; font-size: 15px; font-weight: 800; }
+  /* 困ったときは（すっきりした一覧。押すと手順が開く） */
+  .help { margin-top: 8px; }
+  .help-h { margin: 0 4px 8px; font-size: 15px; font-weight: 800; color: var(--sub); letter-spacing: 0.02em; }
+  .help-list { background: var(--card); border-radius: 16px; overflow: hidden; }
+  .help .q + .q { border-top: 1px solid var(--line); }
+  .help .q summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 16px; font-size: 15px; font-weight: 600; -webkit-tap-highlight-color: transparent; }
+  .help .q summary::-webkit-details-marker { display: none; }
+  .help .q summary::after { content: ""; flex: none; width: 8px; height: 8px; border-right: 2px solid var(--sub); border-bottom: 2px solid var(--sub); transform: rotate(45deg); margin-top: -4px; transition: transform .2s; }
+  .help .q[open] summary::after { transform: rotate(-135deg); margin-top: 4px; }
+  .help .a { padding: 0 16px 14px; font-size: 14px; line-height: 1.65; color: var(--sub); }
+  .help .a p { margin: 0; }
+  .help .a ol { margin: 0; padding-left: 1.4em; }
+  .help .a li + li { margin-top: 4px; }
+  .help .a b { color: var(--fg); }
+  .help-foot { margin: 10px 4px 0; font-size: 12.5px; color: var(--sub); }
 </style>
 </head>
 <body>
@@ -237,17 +252,37 @@
     <a class="btn" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a>
     <!-- アプリから「Safariで確かめる」で来たときのために、アプリに戻る入口（アプリのURLの名前 osusumehide://） -->
     <a class="btn sub2" href="osusumehide://">アプリに戻る</a></div>
-  <details class="trouble" id="trouble">
-    <summary>表示が反映されませんか？</summary>
-    <p class="tt">うまく表示設定が反映されないときの対策</p>
-    <ul class="cases">
-      <li><div class="case">アプリで「登録チャンネル」や「コメント欄」の表示を変えたのに、YouTubeの画面が変わらない</div><div class="fix"><b>対策</b><span class="nw">YouTubeのページを</span><span class="nw">読み込み直す（アドレスバーの ↻）</span></div></li>
-      <li><div class="case">前から開いていたYouTubeのタブで、表示が変わらない</div><div class="fix"><b>対策</b><span class="nw">そのタブを閉じて、</span><span class="nw">アプリの「SafariでYouTubeを開く」から</span><span class="nw">開き直す</span></div></li>
-      <li><div class="case">おすすめやショートも出ている（拡張機能が止まっているかもしれない）</div><div class="fix"><b>対策</b><span class="nw">「設定」アプリ →</span><span class="nw">「アプリ」→</span><span class="nw">「Safari」→</span><span class="nw">「機能拡張」→</span><span class="nw">「おすすめ・ショート非表示 for Y」が</span><span class="nw">オンになっているか確かめる</span></div></li>
-      <li><div class="case">アプリやiOSを更新した・入れ直したあと、うまく動かない</div><div class="fix"><b>対策</b><span class="nw">上と同じ場所で、</span><span class="nw">「おすすめ・ショート非表示 for Y」を</span><span class="nw">一度オフにして、</span><span class="nw">もう一度オンにする</span></div></li>
-      <li><div class="case">上のどれをしても直らない</div><div class="fix"><b>対策</b>アプリの「ご不満・ご要望」から教えてください。すぐ直します</div></li>
-    </ul>
-  </details>
+  <!-- 表示設定が反映されないときは：症状を1行ずつ並べ、押すとその下に手順が開く（1つずつ自分で開け閉めできる） -->
+  <section class="help" id="trouble">
+    <h2 class="help-h">表示設定が反映されないときは</h2>
+    <div class="help-list">
+      <details class="q">
+        <summary>表示の設定が変わらない</summary>
+        <div class="a"><p>YouTubeのページを読み込み直してください（アドレスバーの <b>↻</b>）</p></div>
+      </details>
+      <details class="q">
+        <summary>前から開いていたタブで変わらない</summary>
+        <div class="a"><p>そのタブを閉じて、アプリの「SafariでYouTubeを開く」から開き直してください</p></div>
+      </details>
+      <details class="q">
+        <summary>おすすめやショートも出ている</summary>
+        <div class="a"><ol>
+          <li>「設定」アプリ → 「アプリ」 → 「Safari」</li>
+          <li>「機能拡張」を開く</li>
+          <li>「おすすめ・ショート非表示 for Y」がオンか確かめる</li>
+        </ol></div>
+      </details>
+      <details class="q">
+        <summary>更新・入れ直しのあと動かない</summary>
+        <div class="a"><ol>
+          <li>「設定」アプリ → 「アプリ」 → 「Safari」 → 「機能拡張」</li>
+          <li>「おすすめ・ショート非表示 for Y」を一度オフにする</li>
+          <li>もう一度オンにする</li>
+        </ol></div>
+      </details>
+    </div>
+    <p class="help-foot">直らないときは、アプリの「ご不満・ご要望」から教えてください</p>
+  </section>
 </main>
 <div class="band" id="band"></div>
 <div class="pointer" id="pointer" aria-hidden="true">
