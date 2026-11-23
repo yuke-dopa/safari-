@@ -190,9 +190,15 @@
   .help .a li + li { margin-top: 4px; }
   .help .a b { color: var(--fg); }
   .help-foot { margin: 10px 4px 0; font-size: 12.5px; color: var(--sub); }
-  /* アプリの「ご不満・ご要望」と同じ見た目（白い枠・青い文字）。画面の下に、いつも横幅いっぱいで出す */
-  .fb { position: fixed; left: 12px; right: 12px; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); z-index: 50; display: block; padding: 16px; border-radius: 14px; background: var(--card); color: var(--accent); border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(0,0,0,0.18); font-size: 16px; font-weight: 600; text-align: center; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  body { padding-bottom: 96px; }
+  /* ご不満・ご要望（アプリと同じ見た目：白い枠に青い文字） */
+  .fbx { margin-top: -8px; }
+  .fb-open { display: block; width: 100%; padding: 16px; border: 0; border-radius: 16px; background: var(--card); color: var(--accent); font-family: inherit; font-size: 16px; font-weight: 600; line-height: 1.4; text-align: center; cursor: pointer; }
+  .fb-box { margin-top: 10px; padding: 16px; border-radius: 16px; background: var(--card); }
+  .fb-t { margin: 0 0 6px; font-size: 16px; font-weight: 800; }
+  .fb-b { margin: 0 0 10px; font-size: 14px; line-height: 1.6; color: var(--sub); }
+  .fb-box textarea { display: block; width: 100%; box-sizing: border-box; min-height: 120px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); font-family: inherit; font-size: 16px; line-height: 1.5; resize: vertical; }
+  .fb-n { margin: 8px 0 10px; font-size: 12px; line-height: 1.5; color: var(--sub); }
+  .fb-done { margin: 10px 0 0; font-size: 15px; font-weight: 700; color: var(--ok); text-align: center; }
 </style>
 </head>
 <body>
@@ -284,7 +290,18 @@
         </ol></div>
       </details>
     </div>
-    <p class="help-foot">直らないときは、下の「ご不満・ご要望」から教えてください</p>
+  </section>
+  <!-- ご不満・ご要望：アプリと同じように、このページの中で書いて送れる（Googleフォームの画面には移らない） -->
+  <section class="fbx" id="fb">
+    <button type="button" class="fb-open" id="fbOpen">👉ご不満・ご要望はこちらにお願いします🙇</button>
+    <div class="fb-box" id="fbBox" hidden>
+      <p class="fb-t">ご不満な点や、ご希望などなんでもお願いします🙇</p>
+      <p class="fb-b">「ここが使いにくい」「こんな機能がほしい」など、なんでも遠慮なくお願いします。頂いたお声は、サービス改善に活かさせていただきます！</p>
+      <textarea id="fbText" maxlength="1000" placeholder="例：〇〇の機能が欲しい/〇〇のときバグる"></textarea>
+      <p class="fb-n">入力した内容が、Googleフォームを通じて開発者に送られます。名前やアカウントの情報は送られません。</p>
+      <button type="button" class="btn" id="fbSend">送信する</button>
+      <p class="fb-done" id="fbDone" hidden>送信しました。ありがとうございます🙇</p>
+    </div>
   </section>
 </main>
 <div class="band" id="band"></div>
@@ -383,7 +400,26 @@
   }
 })();
 </script>
-<!-- いつも画面の右下に見える「ご要望フォーム」（アプリの「ご不満・ご要望」と同じフォーム） -->
-<a class="fb" href="https://docs.google.com/forms/d/e/1FAIpQLScHSWxWdoa6ZHZfE_xWO6tnCslgcIobR23o0mMYEYcQQmvwYw/viewform" target="_blank" rel="noopener">👉ご不満・ご要望はこちらにお願いします🙇</a>
+<script>
+(function () {
+  var open = document.getElementById("fbOpen"), box = document.getElementById("fbBox");
+  var text = document.getElementById("fbText"), send = document.getElementById("fbSend"), done = document.getElementById("fbDone");
+  open.addEventListener("click", function () { box.hidden = !box.hidden; if (!box.hidden) text.focus(); });
+  send.addEventListener("click", function () {
+    var v = (text.value || "").trim();
+    if (!v) { text.focus(); return; }
+    send.disabled = true;
+    var body = "entry.31478225=" + encodeURIComponent(v.slice(0, 1000)) + "&entry.1964239021=" + encodeURIComponent("web-setup") + "&fvv=1&pageHistory=0";
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLScHSWxWdoa6ZHZfE_xWO6tnCslgcIobR23o0mMYEYcQQmvwYw/formResponse", {
+      method: "POST", mode: "no-cors", credentials: "omit",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body
+    }).then(function () {
+      text.value = ""; done.hidden = false; send.disabled = false;
+    }).catch(function () {
+      send.disabled = false; done.hidden = false; done.textContent = "送れませんでした。電波のよいところで、もう一度お試しください";
+    });
+  });
+})();
+</script>
 </body>
 </html>
