@@ -141,6 +141,11 @@
   var notDone = false;
   try { notDone = new URLSearchParams(location.search).get("ng") === "1"; } catch (e) { notDone = false; }
   if (notDone) setUpUser = false;
+  // 2026-11-24：アプリを入れ直した直後など、「設定できているか、まだ確かめていない」とき（chk=1）。
+  // 設定できている人もいるので、すぐには「動いていない」と言わず、8秒まで待つ。動けばそのままYouTubeへ、動かなければ案内を出す
+  var checkMode = false;
+  try { checkMode = new URLSearchParams(location.search).get("chk") === "1"; } catch (e) { checkMode = false; }
+  if (checkMode) { setUpUser = true; notDone = false; }
   var helpWait = notDone ? 0 : setUpUser ? 3000 : 1200; // 確かめるページが読み込まれてから、この時間返事がなければ案内を出す
   if (setUpUser) document.getElementById("setup").hidden = true;
 
@@ -171,8 +176,8 @@
     // 拡張機能がオフかもしれないので、すぐ案内を出す（読み込み自体が遅いときは、開いてから4秒で出す）。円は灰色にする
     // 2026-11-24：設定が最後まで済んでいる人（setUpUser）には、「動いていないかもしれません」は出さない（ユーザーの指示）。
     // Safariを開いた直後は拡張機能の準備が遅れるだけなので、返事を待ち続け、8秒たっても返事がなければ、そのままYouTubeへ進む
-    var noAnswer = !setUpUser && (notDone || (firstLoadAt ? now - firstLoadAt > helpWait : el > 2500));
-    if (setUpUser && !ready && !done && el > 8000 && !DEMO) { done = true; location.replace(dest); return; }
+    var noAnswer = (!setUpUser && (notDone || (firstLoadAt ? now - firstLoadAt > helpWait : el > 2500))) || (checkMode && el > 8000);
+    if (setUpUser && !checkMode && !ready && !done && el > 8000 && !DEMO) { done = true; location.replace(dest); return; }
     // 設定できている人には、3秒たったら「もう少し」とだけ出す（ボタンは出さない）
     if (setUpUser && !ready && !helpShown && el > 1500 && !slowShown) {
       slowShown = true;
