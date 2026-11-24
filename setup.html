@@ -292,7 +292,8 @@
     </div>
   </section>
   <!-- ご不満・ご要望：アプリと同じように、このページの中で書いて送れる（Googleフォームの画面には移らない） -->
-  <section class="fbx" id="fb">
+  <!-- 2026-11-24：ふだんは出さない（ユーザーの指示）。YouTubeの画面の「ご不満・ご要望」から来たとき（#fb）だけ出す -->
+  <section class="fbx" id="fb" hidden>
     <button type="button" class="fb-open" id="fbOpen">問題が解決しませんか？ご不満をこちらにお願いします</button>
     <div class="fb-box" id="fbBox" hidden>
       <p class="fb-t">解決しない問題や、ご不満を教えてください🙇</p>
@@ -406,7 +407,7 @@
   var text = document.getElementById("fbText"), send = document.getElementById("fbSend"), done = document.getElementById("fbDone");
   open.addEventListener("click", function () { box.hidden = !box.hidden; if (!box.hidden) text.focus(); });
   // YouTubeの画面の「ご不満・ご要望」から来たとき（#fb）は、書く欄を開いた状態で見せる
-  if (location.hash === "#fb") { box.hidden = false; setTimeout(function () { document.getElementById("fb").scrollIntoView({ block: "start" }); }, 80); }
+  if (location.hash === "#fb") { document.getElementById("fb").hidden = false; box.hidden = false; setTimeout(function () { document.getElementById("fb").scrollIntoView({ block: "start" }); }, 80); }
   send.addEventListener("click", function () {
     var v = (text.value || "").trim();
     if (!v) { text.focus(); return; }

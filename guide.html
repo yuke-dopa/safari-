@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>拡張機能の設定</title>
+<style>
+  /* 待合室の「拡張機能を設定する」から来るページ。アプリの中の「設定方法（A or B）」と同じ形
+     【A】手順の動画を小さな画面（ピクチャ・イン・ピクチャ）で浮かべて、YouTubeを新しいタブで開く
+     【B】「設定」アプリから設定する手順（写真つき）
+     その下に「表示設定が反映されないときは」 */
+  :root {
+    --bg: #f5f5f7; --card: #ffffff; --fg: #111111; --sub: #6b6b70; --line: #dcdce2; --accent: #2563eb;
+    --font: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #0f0f0f; --card: #1c1c1e; --fg: #ffffff; --sub: #9a9aa0; --line: #2c2c30; --accent: #4f8cff; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #0f0f0f; --card: #1c1c1e; --fg: #ffffff; --sub: #9a9aa0; --line: #2c2c30; --accent: #4f8cff; color-scheme: dark; }
+  html, body { margin: 0; }
+  [hidden] { display: none !important; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font); padding: 24px max(16px, env(safe-area-inset-right, 0px)) 80px max(16px, env(safe-area-inset-left, 0px)); box-sizing: border-box; }
+  .wrap { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+  .card { background: var(--card); border-radius: 16px; padding: 16px; }
+  h1 { margin: 0 0 4px; font-size: 17px; font-weight: 800; }
+  .btn { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 14px; padding: 15px 12px; font-family: inherit; font-size: 16px; font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; text-decoration: none; }
+  .btn.a { background: var(--accent); color: #fff; margin-top: 10px; }
+  .btn.b { background: transparent; color: var(--fg); border: 1.5px solid var(--line); margin-top: 14px; }
+  .vid { margin-top: 12px; text-align: center; }
+  .vid video { width: 252px; height: 336px; border-radius: 12px; background: #e9e9ee; }
+  .vid p { margin: 8px 0 0; font-size: 13px; color: var(--sub); }
+  .steps { margin: 14px 0 0; padding: 0; list-style: none; counter-reset: st; }
+  .steps li { counter-increment: st; position: relative; padding-left: 36px; margin-top: 18px; font-size: 15px; line-height: 1.5; font-weight: 600; }
+  .steps li:first-child { margin-top: 0; }
+  .steps li::before { content: counter(st); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 13px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 700; line-height: 26px; text-align: center; }
+  .steps img { display: block; width: 100%; height: auto; margin-top: 8px; border-radius: 10px; }
+  .note { margin: 14px 0 0; font-size: 12px; line-height: 1.5; color: var(--sub); }
+  .close { display: block; margin: 12px auto 0; padding: 6px 12px; border: 0; background: none; color: var(--sub); font-family: inherit; font-size: 15px; text-decoration: underline; }
+  /* 表示設定が反映されないときは */
+  .help-h { margin: 8px 4px 8px; font-size: 13px; font-weight: 800; color: var(--sub); letter-spacing: 0.02em; }
+  .help-list { background: var(--card); border-radius: 16px; overflow: hidden; }
+  .q + .q { border-top: 1px solid var(--line); }
+  .q summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 16px; font-size: 15px; font-weight: 600; -webkit-tap-highlight-color: transparent; }
+  .q summary::-webkit-details-marker { display: none; }
+  .q summary::after { content: ""; flex: none; width: 8px; height: 8px; border-right: 2px solid var(--sub); border-bottom: 2px solid var(--sub); transform: rotate(45deg); margin-top: -4px; transition: transform .2s; }
+  .q[open] summary::after { transform: rotate(-135deg); margin-top: 4px; }
+  .a2 { padding: 0 16px 14px; font-size: 14px; line-height: 1.65; color: var(--sub); }
+  .a2 p { margin: 0; }
+  .a2 ol { margin: 0; padding-left: 1.4em; }
+  .a2 li + li { margin-top: 4px; }
+  .a2 b { color: var(--fg); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="card">
+    <h1>設定方法（A or B）</h1>
+    <button type="button" class="btn a" id="goA">【A】Safariで設定する（案内付き）</button>
+    <!-- 手順の動画。【A】を押すと、小さな画面で浮かべてから、YouTubeを新しいタブで開く -->
+    <div class="vid" id="vidBox" hidden>
+      <video id="vid" muted playsinline preload="auto" webkit-playsinline></video>
+      <p>動画が浮かばないときは、動画を見ながら同じ順に押してください</p>
+    </div>
+    <button type="button" class="btn b" id="goB">【B】「設定」アプリから設定する ▾</button>
+    <div id="bBox" hidden>
+      <ol class="steps">
+        <li>iPhoneの「設定」アプリを開いて、「アプリ」をタップ<img src="guide/step1-apps.jpg" alt=""></li>
+        <li>一覧から「Safari」をタップ<img src="guide/step2-safari.jpg" alt=""></li>
+        <li>「機能拡張」をタップ<img src="guide/step3-extensions.jpg" alt=""></li>
+        <li>「おすすめ・ショート非表示 for Y」をタップ<img src="guide/step4-ours.jpg" alt=""></li>
+        <li>「機能拡張を許可」をオンにする<img src="guide/step5-allow.jpg" alt=""></li>
+        <li>同じ画面の下の「m.youtube.com」と「youtube.com」を「許可」にする（「その他のWebサイト」を「許可」にしても大丈夫です）<img src="guide/step6-sites.jpg" alt=""></li>
+        <li>SafariでYouTubeを開けば完了です。YouTubeのアプリではなく、Safariで見るのがコツです。</li>
+      </ol>
+      <p class="note">※写真は実際の画面です。iPhoneのバージョンによって、名前や並び方が少し違うことがあります。</p>
+      <button type="button" class="close" id="closeB">閉じる ▴</button>
+    </div>
+  </section>
+
+  <section id="trouble">
+    <h2 class="help-h">表示設定が反映されないときは</h2>
+    <div class="help-list">
+      <details class="q">
+        <summary>表示の設定が変わらない</summary>
+        <div class="a2"><p>YouTubeのページを読み込み直してください（アドレスバーの <b>↻</b>）</p></div>
+      </details>
+      <details class="q">
+        <summary>前から開いていたタブで変わらない</summary>
+        <div class="a2"><p>そのタブを閉じて、アプリの「SafariでYouTubeを開く」から開き直してください</p></div>
+      </details>
+      <details class="q">
+        <summary>おすすめやショートも出ている</summary>
+        <div class="a2"><ol>
+          <li>「設定」アプリ → 「アプリ」 → 「Safari」</li>
+          <li>「機能拡張」を開く</li>
+          <li>「おすすめ・ショート非表示 for Y」がオンか確かめる</li>
+        </ol></div>
+      </details>
+      <details class="q">
+        <summary>更新・入れ直しのあと動かない</summary>
+        <div class="a2"><ol>
+          <li>「設定」アプリ → 「アプリ」 → 「Safari」 → 「機能拡張」</li>
+          <li>「おすすめ・ショート非表示 for Y」を一度オフにする</li>
+          <li>もう一度オンにする</li>
+        </ol></div>
+      </details>
+    </div>
+  </section>
+</main>
+<script>
+(function () {
+  "use strict";
+  // iPadかどうか（新しいiPadは「Mac」と名乗るので、指で触れるかでも見分ける）で、手順の動画を選ぶ
+  var pad = /iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  var vid = document.getElementById("vid"), vidBox = document.getElementById("vidBox");
+  vid.src = pad ? "guide/setup-ipad.mp4" : "guide/setup-iphone.mp4";
+  // 動画の先頭には、①を3.5秒多く入れてある（1回目だけ①を長く見せる）。最後まで流れたら、その分を飛ばして流し直す
+  vid.addEventListener("ended", function () { try { vid.currentTime = 3.5; vid.play(); } catch (e) { /* なにもしない */ } });
+  var YT = "https://m.youtube.com/?noapp=1#osh-setup";
+  document.getElementById("goA").addEventListener("click", function () {
+    vidBox.hidden = false;
+    try { vid.currentTime = 0; } catch (e) { /* なにもしない */ }
+    var p = vid.play();
+    // 押したその場で、小さな画面に浮かべる（Safariは、押した操作の中でないと浮かべられない）
+    try {
+      if (vid.webkitSupportsPresentationMode && vid.webkitSupportsPresentationMode("picture-in-picture")) vid.webkitSetPresentationMode("picture-in-picture");
+      else if (vid.requestPictureInPicture) vid.requestPictureInPicture().catch(function () {});
+    } catch (e) { /* 浮かべられない端末では、そのまま進む */ }
+    if (p && p.catch) p.catch(function () {});
+    // YouTubeは新しいタブで開く（このページを残しておくと、浮かべた動画が消えない）
+    window.open(YT, "_blank");
+  });
+  var bBox = document.getElementById("bBox"), goB = document.getElementById("goB");
+  function setB(open) { bBox.hidden = !open; goB.textContent = "【B】「設定」アプリから設定する " + (open ? "▴" : "▾"); }
+  goB.addEventListener("click", function () { setB(bBox.hidden); });
+  document.getElementById("closeB").addEventListener("click", function () { setB(false); });
+})();
+</script>
+</body>
+</html>

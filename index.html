@@ -81,7 +81,7 @@
   <h1 id="title">数秒お待ちください</h1>
   <p id="wait" class="wait"><span class="nw">おすすめ・ショートを</span><span class="nw">隠す処理をしています</span></p>
   <!-- 設定へのボタンは、これ1つだけ。最初から出しておき、オフらしいと分かったら目立たせる -->
-  <a class="btn" id="setup" href="setup.html">拡張機能を設定する</a>
+  <a class="btn" id="setup" href="guide.html">拡張機能を設定する</a>
 </main>
 
 <script>
@@ -135,7 +135,11 @@
   // 「オフでは？」とあわてさせない。設定のボタンは最初は出さず、10秒待っても動かないときだけ、落ち着いた文で出す。
   // まだ設定していない人（seen なし）は、今までどおり早めに案内する
   var setUpUser = seenMin >= 0;
-  var helpWait = setUpUser ? 10000 : 1200; // 確かめるページが読み込まれてから、この時間返事がなければ案内を出す
+  // 2026-11-24：設定が最後まで済んでいない（YouTubeでの許可がまだ）とアプリが分かっているとき（ng=1）は、待たせずにすぐ案内を出す
+  var notDone = false;
+  try { notDone = new URLSearchParams(location.search).get("ng") === "1"; } catch (e) { notDone = false; }
+  if (notDone) setUpUser = false;
+  var helpWait = notDone ? 0 : setUpUser ? 10000 : 1200; // 確かめるページが読み込まれてから、この時間返事がなければ案内を出す
   if (setUpUser) document.getElementById("setup").hidden = true;
 
   // 進み具合：準備ができるまでは、だんだんゆっくり9割に近づく。できたら100%まで進めて、YouTubeへ
@@ -153,7 +157,7 @@
     var el = now - t0;
     if (DEMO && el > demoReadyAt) ready = true;
     // 進み具合：途中でゆっくりにならないよう、10秒で99%まで、ずっと同じ速さで進む（準備ができたら、そこから100%へ）
-    var target = ready ? 1 : Math.min(0.99, el / 10000);
+    var target = ready ? 1 : helpShown ? shown : Math.min(0.99, el / 10000); // 案内を出したら、それ以上は進めない
     shown = ready ? shown + (1 - shown) * Math.min(1, dt / 90) : target;
     if (ready && 1 - shown < 0.004) shown = 1;
     bar.style.strokeDashoffset = (C * (1 - shown)).toFixed(2);
@@ -163,7 +167,7 @@
 
     // 確かめるページが読み込まれてから少し（最近動いていたなら1.2秒、それ以外は2.5秒）たっても返事がなければ、
     // 拡張機能がオフかもしれないので、すぐ案内を出す（読み込み自体が遅いときは、開いてから4秒で出す）。円は灰色にする
-    var noAnswer = firstLoadAt ? now - firstLoadAt > helpWait : el > (setUpUser ? 12000 : 2500);
+    var noAnswer = notDone || (firstLoadAt ? now - firstLoadAt > helpWait : el > (setUpUser ? 12000 : 2500));
     // 設定できている人には、3秒たったら「もう少し」とだけ出す（ボタンは出さない）
     if (setUpUser && !ready && !helpShown && el > 3000 && !slowShown) {
       slowShown = true;
@@ -172,14 +176,15 @@
     if (!ready && !helpShown && noAnswer) {
       helpShown = true;
       ring.classList.add("stop");
-      document.getElementById("title").textContent = setUpUser
+      document.getElementById("title").textContent = setUpUser || notDone
         ? (ja ? "拡張機能が動いていないかもしれません" : "The extension may not be running")
         : (ja ? "拡張機能がオフになっていませんか？" : "Is the extension turned off?");
       document.getElementById("setup").hidden = false;
-      document.getElementById("wait").hidden = true; // 案内を出したら「数秒お待ちください」は消す
+      document.getElementById("wait").hidden = true;
+      ring.hidden = true; // 案内を出したら、％の円は消す（99％で止まって見えないように） // 案内を出したら「数秒お待ちください」は消す
     }
     // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備が遅れることがある）。オンだと分かれば、そのままYouTubeへ
-    if (ready) { ring.classList.remove("stop"); document.getElementById("setup").hidden = true; }
+    if (ready) { ring.classList.remove("stop"); ring.hidden = false; document.getElementById("setup").hidden = true; }
     // 準備ができたら、円の動きを待たずに、すぐYouTubeへ
     if (ready && !DEMO && shown < 1) {
       shown = 1;
