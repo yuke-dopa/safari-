@@ -59,9 +59,11 @@
     <h1>設定方法</h1>
     <button type="button" class="btn a" id="goA">Safariで設定する（案内付き）</button>
     <!-- 手順の動画。【A】を押すと、小さな画面で浮かべてから、YouTubeを新しいタブで開く -->
-    <div class="vid" id="vidBox" hidden>
-      <video id="vid" muted playsinline preload="auto" webkit-playsinline></video>
-      <p>動画が浮かばないときは、動画を見ながら同じ順に押してください</p>
+    <!-- 動画は、ページを開いたときから読み込んでおく（読み込みが済んでいないと、Safariは小さな画面に浮かべられない） -->
+    <div class="vid" id="vidBox">
+      <video id="vid" muted autoplay playsinline preload="auto" webkit-playsinline></video>
+      <button type="button" class="btn a" id="goPip" hidden>動画を浮かべてYouTubeを開く</button>
+      <p id="vidNote">動画が浮かばないときは、動画を見ながら同じ順に押してください</p>
     </div>
     <button type="button" class="lnk" id="goB">うまくいかないときは「設定」アプリから設定する ▾</button>
     <div id="bBox" hidden>
@@ -119,18 +121,29 @@
   // 動画の先頭には、①を3.5秒多く入れてある（1回目だけ①を長く見せる）。最後まで流れたら、その分を飛ばして流し直す
   vid.addEventListener("ended", function () { try { vid.currentTime = 3.5; vid.play(); } catch (e) { /* なにもしない */ } });
   var YT = "https://m.youtube.com/?noapp=1#osh-setup";
-  document.getElementById("goA").addEventListener("click", function () {
-    vidBox.hidden = false;
-    try { vid.currentTime = 0; } catch (e) { /* なにもしない */ }
-    var p = vid.play();
-    // 押したその場で、小さな画面に浮かべる（Safariは、押した操作の中でないと浮かべられない）
+  vid.load();
+  var goPip = document.getElementById("goPip");
+  // 小さな画面に浮かべて、YouTubeを新しいタブで開く（押した操作の中で行う。Safariは、そうでないと浮かべられない）
+  function floatAndGo() {
     try {
       if (vid.webkitSupportsPresentationMode && vid.webkitSupportsPresentationMode("picture-in-picture")) vid.webkitSetPresentationMode("picture-in-picture");
       else if (vid.requestPictureInPicture) vid.requestPictureInPicture().catch(function () {});
     } catch (e) { /* 浮かべられない端末では、そのまま進む */ }
-    if (p && p.catch) p.catch(function () {});
     // YouTubeは新しいタブで開く（このページを残しておくと、浮かべた動画が消えない）
     window.open(YT, "_blank");
+  }
+  document.getElementById("goA").addEventListener("click", function () {
+    try { vid.currentTime = 0; } catch (e) { /* なにもしない */ }
+    var p = vid.play();
+    if (p && p.catch) p.catch(function () {});
+    // 動画の読み込みが済んでいれば、その場で浮かべてYouTubeへ。済んでいなければ、流し始めて、もう一度押してもらう
+    if (vid.readyState >= 2) floatAndGo();
+    else { goPip.hidden = false; vidBox.scrollIntoView({ block: "center" }); }
+  });
+  goPip.addEventListener("click", function () {
+    var p = vid.play();
+    if (p && p.catch) p.catch(function () {});
+    floatAndGo();
   });
   var bBox = document.getElementById("bBox"), goB = document.getElementById("goB");
   function setB(open) { bBox.hidden = !open; goB.textContent = "うまくいかないときは「設定」アプリから設定する " + (open ? "▴" : "▾"); }
