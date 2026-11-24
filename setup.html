@@ -192,6 +192,13 @@
   .help-foot { margin: 10px 4px 0; font-size: 12.5px; color: var(--sub); }
   /* ご不満・ご要望（アプリと同じ見た目：白い枠に青い文字） */
   .fbx { margin-top: -8px; }
+  /* ホームの「〇〇が不便…こちらに」から来たとき（#fb）：アプリの「ご意見」の画面と同じく、書く欄だけを見せる */
+  body.fbonly > *:not(#main), body.fbonly #main > *:not(#fb), body.fbonly #fbOpen { display: none !important; }
+  body.fbonly #main { padding-top: 24px; }
+  body.fbonly .fbx { margin-top: 0; }
+  body.fbonly .fb-t { font-size: 20px; line-height: 1.45; }
+  body.fbonly #fbSend { display: block; width: 100%; padding: 15px 12px; border-radius: 14px; font-size: 17px; }
+  .fb-close { display: block; margin: 14px auto 0; padding: 6px 12px; border: 0; background: none; color: var(--sub); font-family: inherit; font-size: 15px; text-decoration: underline; cursor: pointer; }
   .fb-open { display: block; width: 100%; padding: 16px; border: 0; border-radius: 16px; background: var(--card); color: var(--accent); font-family: inherit; font-size: 16px; font-weight: 600; line-height: 1.4; text-align: center; cursor: pointer; }
   .fb-box { margin-top: 10px; padding: 16px; border-radius: 16px; background: var(--card); }
   .fb-t { margin: 0 0 6px; font-size: 16px; font-weight: 800; }
@@ -301,6 +308,7 @@
       <p class="fb-n">入力した内容が、Googleフォームを通じて開発者に送られます。名前やアカウントの情報は送られません。</p>
       <button type="button" class="btn" id="fbSend">送信する</button>
       <p class="fb-done" id="fbDone" hidden>送信しました。ありがとうございます🙇</p>
+      <button type="button" class="fb-close" id="fbClose" hidden>閉じる</button>
     </div>
   </section>
 </main>
@@ -408,17 +416,36 @@
   // YouTubeの画面の「ご不満・ご要望」から来たとき（#fb）は、書く欄を開いた状態で見せる
   // ホームの「〇〇が不便…こちらに」から来たときは要望も多いので、入力欄の例を要望向けにする
   // （このページの「解決しませんか？」から開いたときは、「設定が反映されない」の例のまま）
-  if (location.hash === "#fb") {
+  var fromHome = location.hash === "#fb";
+  if (fromHome) {
+    // 2026-11-24：アプリの「ご意見」の画面と同じ見た目・文にする（設定の案内などは出さない）
+    document.body.classList.add("fbonly");
+    document.querySelector("#fbBox .fb-b").textContent = "「ここが使いにくい」「こんな機能がほしい」など、なんでも遠慮なくお願いします。頂いたお声は、サービス改善に活かさせていただきます！";
+    document.querySelector("#fbBox .fb-n").textContent = "入力した内容と、この端末だけのランダムな番号が、Googleフォームを通じて開発者に送られます。名前やアカウントの情報は送られません。";
+    var cl = document.getElementById("fbClose");
+    cl.hidden = false;
+    // 閉じる：このタブを閉じる（閉じられないときは、前のページへ戻る。前がなければYouTubeのホームへ。同じタブのまま移るので、公式アプリは開かない）
+    cl.addEventListener("click", function () {
+      try { window.close(); } catch (e) { /* なにもしない */ }
+      setTimeout(function () { if (history.length > 1) history.back(); else location.replace("https://m.youtube.com/?noapp=1"); }, 300);
+    });
     text.placeholder = "例：〇〇の機能が欲しい/〇〇のときバグる";
     // 見出しも要望向けにする（アプリの「〇〇が不便…」から開いたときと同じ文）
     document.querySelector("#fbBox .fb-t").textContent = "不便なところやご希望・ご要望など、なんでもお願いします🙇";
   }
   if (location.hash === "#fb") { document.getElementById("fb").hidden = false; box.hidden = false; setTimeout(function () { document.getElementById("fb").scrollIntoView({ block: "start" }); }, 80); }
+  // この端末だけのランダムな番号（アプリと同じく、同じ人の声をまとめて読めるように。名前などは含まない）
+  function webId() {
+    var id = "";
+    try { id = localStorage.getItem("osh-web-id") || ""; } catch (e) { id = ""; }
+    if (!id) { id = "web-" + Math.random().toString(36).slice(2, 10); try { localStorage.setItem("osh-web-id", id); } catch (e) { /* なにもしない */ } }
+    return id;
+  }
   send.addEventListener("click", function () {
     var v = (text.value || "").trim();
     if (!v) { text.focus(); return; }
     send.disabled = true;
-    var body = "entry.31478225=" + encodeURIComponent(v.slice(0, 1000)) + "&entry.1964239021=" + encodeURIComponent("web-setup") + "&fvv=1&pageHistory=0";
+    var body = "entry.31478225=" + encodeURIComponent(v.slice(0, 1000)) + "&entry.1964239021=" + encodeURIComponent(fromHome ? webId() : "web-setup") + "&fvv=1&pageHistory=0";
     fetch("https://docs.google.com/forms/d/e/1FAIpQLScHSWxWdoa6ZHZfE_xWO6tnCslgcIobR23o0mMYEYcQQmvwYw/formResponse", {
       method: "POST", mode: "no-cors", credentials: "omit",
       headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body
