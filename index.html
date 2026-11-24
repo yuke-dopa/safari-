@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>おすすめ・ショートを隠しています</title>
+<title>拡張機能がオンか確認しています</title>
 <style>
   /* 一枚の画面：まん中に、アプリのアイコン・進み具合の円・ひとこと。アプリと同じ配色 */
   :root {
@@ -78,8 +78,8 @@
     <div class="pct"><span id="pct">0</span><small>%</small></div>
   </div>
 
-  <h1 id="title">数秒お待ちください</h1>
-  <p id="wait" class="wait"><span class="nw">おすすめ・ショートを</span><span class="nw">隠す処理をしています</span></p>
+  <h1 id="title"><span class="nw">拡張機能がオンか</span><span class="nw">確認しています</span></h1>
+  <p id="wait" class="wait">数秒お待ちください</p>
   <!-- 設定へのボタンは、これ1つだけ。最初から出しておき、オフらしいと分かったら目立たせる -->
   <a class="btn" id="setup" href="guide.html">拡張機能を設定する</a>
 </main>
@@ -92,8 +92,8 @@
   if (!ja) {
     document.documentElement.lang = "en";
     document.getElementById("appName").textContent = "No Recs & Shorts";
-    document.getElementById("title").textContent = "Just a few seconds";
-    document.getElementById("wait").textContent = "Hiding recommendations and Shorts…";
+    document.getElementById("title").textContent = "Checking the extension is on";
+    document.getElementById("wait").textContent = "Just a few seconds";
     document.getElementById("setup").textContent = "Set up the extension";
     document.title = "Getting YouTube ready";
   } else {
@@ -171,7 +171,7 @@
     // 設定できている人には、3秒たったら「もう少し」とだけ出す（ボタンは出さない）
     if (setUpUser && !ready && !helpShown && el > 1500 && !slowShown) {
       slowShown = true;
-      document.getElementById("title").textContent = ja ? "もう少しお待ちください…" : "Almost ready…";
+      document.getElementById("wait").textContent = ja ? "もう少しお待ちください…" : "Almost ready…";
     }
     if (!ready && !helpShown && noAnswer) {
       helpShown = true;
