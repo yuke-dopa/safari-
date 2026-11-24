@@ -30,6 +30,7 @@
   .lnk { display: block; margin: 14px auto 0; padding: 6px 4px; border: 0; background: none; color: var(--sub); font-family: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
   .vid { margin-top: 12px; text-align: center; }
   .vid video { width: 252px; height: 336px; border-radius: 12px; background: #e9e9ee; }
+  .vid p:empty { display: none; }
   .vid p { margin: 8px 0 0; font-size: 13px; color: var(--sub); }
   .steps { margin: 14px 0 0; padding: 0; list-style: none; counter-reset: st; }
   .steps li { counter-increment: st; position: relative; padding-left: 36px; margin-top: 18px; font-size: 15px; line-height: 1.5; font-weight: 600; }
@@ -63,7 +64,7 @@
     <div class="vid" id="vidBox">
       <video id="vid" muted autoplay playsinline preload="auto" webkit-playsinline></video>
       <button type="button" class="btn a" id="goPip" hidden>動画を浮かべてYouTubeを開く</button>
-      <p id="vidNote">動画が浮かばないときは、動画を見ながら同じ順に押してください</p>
+      <p id="vidNote"></p>
     </div>
     <button type="button" class="lnk" id="goB">うまくいかないときは「設定」アプリから設定する ▾</button>
     <div id="bBox" hidden>
@@ -81,35 +82,6 @@
     </div>
   </section>
 
-  <section id="trouble">
-    <h2 class="help-h">表示設定が反映されないときは</h2>
-    <div class="help-list">
-      <details class="q">
-        <summary>表示の設定が変わらない</summary>
-        <div class="a2"><p>YouTubeのページを読み込み直してください（アドレスバーの <b>↻</b>）</p></div>
-      </details>
-      <details class="q">
-        <summary>前から開いていたタブで変わらない</summary>
-        <div class="a2"><p>そのタブを閉じて、アプリの「SafariでYouTubeを開く」から開き直してください</p></div>
-      </details>
-      <details class="q">
-        <summary>おすすめやショートも出ている</summary>
-        <div class="a2"><ol>
-          <li>「設定」アプリ → 「アプリ」 → 「Safari」</li>
-          <li>「機能拡張」を開く</li>
-          <li>「おすすめ・ショート非表示 for Y」がオンか確かめる</li>
-        </ol></div>
-      </details>
-      <details class="q">
-        <summary>更新・入れ直しのあと動かない</summary>
-        <div class="a2"><ol>
-          <li>「設定」アプリ → 「アプリ」 → 「Safari」 → 「機能拡張」</li>
-          <li>「おすすめ・ショート非表示 for Y」を一度オフにする</li>
-          <li>もう一度オンにする</li>
-        </ol></div>
-      </details>
-    </div>
-  </section>
 </main>
 <script>
 (function () {
@@ -122,29 +94,48 @@
   vid.addEventListener("ended", function () { try { vid.currentTime = 3.5; vid.play(); } catch (e) { /* なにもしない */ } });
   var YT = "https://m.youtube.com/?noapp=1#osh-setup";
   vid.load();
-  var goPip = document.getElementById("goPip");
-  // 小さな画面に浮かべて、YouTubeを新しいタブで開く（押した操作の中で行う。Safariは、そうでないと浮かべられない）
-  function floatAndGo() {
+  var goPip = document.getElementById("goPip"), goA = document.getElementById("goA"), vidNote = document.getElementById("vidNote");
+  // 1回目のタップ：動画を小さな画面に浮かべるだけ（同じタップでYouTubeを開くと、タブが切り替わって浮かばない）
+  // 浮かんだら、ボタンを「YouTubeを開く」に変えて、2回目のタップで新しいタブにYouTubeを開く
+  var floated = false, waitT = 0;
+  function setFloated() {
+    floated = true;
+    clearTimeout(waitT);
+    goPip.hidden = true;
+    goA.textContent = "YouTubeを開く（動画は浮かんだまま）";
+  }
+  vid.addEventListener("webkitpresentationmodechanged", function () { if (vid.webkitPresentationMode === "picture-in-picture") setFloated(); });
+  vid.addEventListener("enterpictureinpicture", setFloated);
+  function float() {
     try {
       if (vid.webkitSupportsPresentationMode && vid.webkitSupportsPresentationMode("picture-in-picture")) vid.webkitSetPresentationMode("picture-in-picture");
       else if (vid.requestPictureInPicture) vid.requestPictureInPicture().catch(function () {});
-    } catch (e) { /* 浮かべられない端末では、そのまま進む */ }
-    // YouTubeは新しいタブで開く（このページを残しておくと、浮かべた動画が消えない）
-    window.open(YT, "_blank");
+    } catch (e) { /* 浮かべられない端末 */ }
   }
-  document.getElementById("goA").addEventListener("click", function () {
+  function tryFloat() {
+    var p = vid.play();
+    if (p && p.catch) p.catch(function () {});
+    // 読み込みが済んでいないと浮かべられないので、流し始めて、もう一度押してもらう
+    if (vid.readyState < 2) { goPip.hidden = false; vidBox.scrollIntoView({ block: "center" }); return; }
+    float();
+    // 少し待っても浮かばなければ、動画を見てから設定してもらう（YouTubeはボタンで開く）
+    clearTimeout(waitT);
+    waitT = setTimeout(function () {
+      if (floated) return;
+      floated = true;
+      goPip.hidden = true;
+      goA.textContent = "YouTubeを開く";
+      vidNote.textContent = "この動画を見てから、YouTubeで同じ順に押してください";
+      vidBox.scrollIntoView({ block: "center" });
+    }, 2500);
+  }
+  goA.addEventListener("click", function () {
+    if (floated) { window.open(YT, "_blank"); return; }
     try { vid.currentTime = 0; } catch (e) { /* なにもしない */ }
-    var p = vid.play();
-    if (p && p.catch) p.catch(function () {});
-    // 動画の読み込みが済んでいれば、その場で浮かべてYouTubeへ。済んでいなければ、流し始めて、もう一度押してもらう
-    if (vid.readyState >= 2) floatAndGo();
-    else { goPip.hidden = false; vidBox.scrollIntoView({ block: "center" }); }
+    tryFloat();
   });
-  goPip.addEventListener("click", function () {
-    var p = vid.play();
-    if (p && p.catch) p.catch(function () {});
-    floatAndGo();
-  });
+  goPip.textContent = "動画を浮かべる";
+  goPip.addEventListener("click", tryFloat);
   var bBox = document.getElementById("bBox"), goB = document.getElementById("goB");
   function setB(open) { bBox.hidden = !open; goB.textContent = "うまくいかないときは「設定」アプリから設定する " + (open ? "▴" : "▾"); }
   goB.addEventListener("click", function () { setB(bBox.hidden); });
