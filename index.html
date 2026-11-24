@@ -81,7 +81,9 @@
   <h1 id="title"><span class="nw">拡張機能がオンになっているか</span><span class="nw">確認しています</span></h1>
   <p id="wait" class="wait">数秒お待ちください</p>
   <!-- 設定へのボタンは、これ1つだけ。最初から出しておき、オフらしいと分かったら目立たせる -->
-  <a class="btn" id="setup" href="guide.html">拡張機能を設定する</a>
+  <!-- アプリの設定画面を開く（アプリは「設定ができていない」と覚えて、次から最初に設定の画面を出す）
+       待合室はアプリから開かれるので、アプリは入っている -->
+  <a class="btn" id="setup" href="osusumehide://setup">拡張機能を設定する</a>
 </main>
 
 <script>
