@@ -65,12 +65,12 @@
     <button type="button" class="btn b" id="goB">【B】「設定」アプリから設定する ▾</button>
     <div id="bBox" hidden>
       <ol class="steps">
-        <li>iPhoneの「設定」アプリを開いて、「アプリ」をタップ<img src="guide/step1-apps.jpg" alt=""></li>
-        <li>一覧から「Safari」をタップ<img src="guide/step2-safari.jpg" alt=""></li>
-        <li>「機能拡張」をタップ<img src="guide/step3-extensions.jpg" alt=""></li>
-        <li>「おすすめ・ショート非表示 for Y」をタップ<img src="guide/step4-ours.jpg" alt=""></li>
-        <li>「機能拡張を許可」をオンにする<img src="guide/step5-allow.jpg" alt=""></li>
-        <li>同じ画面の下の「m.youtube.com」と「youtube.com」を「許可」にする（「その他のWebサイト」を「許可」にしても大丈夫です）<img src="guide/step6-sites.jpg" alt=""></li>
+        <li>iPhoneの「設定」アプリを開いて、「アプリ」をタップ<img src="step1-apps.jpg" alt=""></li>
+        <li>一覧から「Safari」をタップ<img src="step2-safari.jpg" alt=""></li>
+        <li>「機能拡張」をタップ<img src="step3-extensions.jpg" alt=""></li>
+        <li>「おすすめ・ショート非表示 for Y」をタップ<img src="step4-ours.jpg" alt=""></li>
+        <li>「機能拡張を許可」をオンにする<img src="step5-allow.jpg" alt=""></li>
+        <li>同じ画面の下の「m.youtube.com」と「youtube.com」を「許可」にする（「その他のWebサイト」を「許可」にしても大丈夫です）<img src="step6-sites.jpg" alt=""></li>
         <li>SafariでYouTubeを開けば完了です。YouTubeのアプリではなく、Safariで見るのがコツです。</li>
       </ol>
       <p class="note">※写真は実際の画面です。iPhoneのバージョンによって、名前や並び方が少し違うことがあります。</p>
@@ -114,7 +114,7 @@
   // iPadかどうか（新しいiPadは「Mac」と名乗るので、指で触れるかでも見分ける）で、手順の動画を選ぶ
   var pad = /iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
   var vid = document.getElementById("vid"), vidBox = document.getElementById("vidBox");
-  vid.src = pad ? "guide/setup-ipad.mp4" : "guide/setup-iphone.mp4";
+  vid.src = pad ? "setup-ipad.mp4" : "setup-iphone.mp4";
   // 動画の先頭には、①を3.5秒多く入れてある（1回目だけ①を長く見せる）。最後まで流れたら、その分を飛ばして流し直す
   vid.addEventListener("ended", function () { try { vid.currentTime = 3.5; vid.play(); } catch (e) { /* なにもしない */ } });
   var YT = "https://m.youtube.com/?noapp=1#osh-setup";
