@@ -264,8 +264,10 @@
     </div></li>
   </ol>
   </div>
-  <div class="done" id="done" hidden><b>✅ 設定できています</b><span>SafariでYouTubeを開くと、おすすめとショートが出なくなります。</span>
-    <a class="btn" href="https://m.youtube.com/?noapp=1">YouTubeを開く</a>
+  <div class="done" id="done" hidden><b>✅ 設定できています</b>
+    <!-- 2026-11-24：YouTubeへ直接のリンクにすると、押したときにiPhoneがYouTube公式アプリで開くことがある（別のサイトからのリンクのため）。
+         同じサイトの待合室を通し、待合室が同じタブのままYouTubeへ移る（公式アプリには絶対に飛ばさない） -->
+    <a class="btn" href="index.html?to=%2F&amp;seen=0">SafariでYouTubeを開く</a>
     <!-- アプリから「Safariで確かめる」で来たときのために、アプリに戻る入口（アプリのURLの名前 osusumehide://） -->
     <a class="btn sub2" href="osusumehide://">「おすすめ・ショート非表示 for Y」に戻る</a></div>
   <!-- 表示設定が反映されないときは：症状を1行ずつ並べ、押すとその下に手順が開く（1つずつ自分で開け閉めできる） -->
