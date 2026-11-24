@@ -27,6 +27,7 @@
   .btn { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 14px; padding: 15px 12px; font-family: inherit; font-size: 16px; font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; text-decoration: none; }
   .btn.a { background: var(--accent); color: #fff; margin-top: 10px; }
   .btn.b { background: transparent; color: var(--fg); border: 1.5px solid var(--line); margin-top: 14px; }
+  .lnk { display: block; margin: 14px auto 0; padding: 6px 4px; border: 0; background: none; color: var(--sub); font-family: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
   .vid { margin-top: 12px; text-align: center; }
   .vid video { width: 252px; height: 336px; border-radius: 12px; background: #e9e9ee; }
   .vid p { margin: 8px 0 0; font-size: 13px; color: var(--sub); }
@@ -55,14 +56,14 @@
 <body>
 <main class="wrap">
   <section class="card">
-    <h1>設定方法（A or B）</h1>
-    <button type="button" class="btn a" id="goA">【A】Safariで設定する（案内付き）</button>
+    <h1>設定方法</h1>
+    <button type="button" class="btn a" id="goA">Safariで設定する（案内付き）</button>
     <!-- 手順の動画。【A】を押すと、小さな画面で浮かべてから、YouTubeを新しいタブで開く -->
     <div class="vid" id="vidBox" hidden>
       <video id="vid" muted playsinline preload="auto" webkit-playsinline></video>
       <p>動画が浮かばないときは、動画を見ながら同じ順に押してください</p>
     </div>
-    <button type="button" class="btn b" id="goB">【B】「設定」アプリから設定する ▾</button>
+    <button type="button" class="lnk" id="goB">うまくいかないときは「設定」アプリから設定する ▾</button>
     <div id="bBox" hidden>
       <ol class="steps">
         <li>iPhoneの「設定」アプリを開いて、「アプリ」をタップ<img src="step1-apps.jpg" alt=""></li>
@@ -132,7 +133,7 @@
     window.open(YT, "_blank");
   });
   var bBox = document.getElementById("bBox"), goB = document.getElementById("goB");
-  function setB(open) { bBox.hidden = !open; goB.textContent = "【B】「設定」アプリから設定する " + (open ? "▴" : "▾"); }
+  function setB(open) { bBox.hidden = !open; goB.textContent = "うまくいかないときは「設定」アプリから設定する " + (open ? "▴" : "▾"); }
   goB.addEventListener("click", function () { setB(bBox.hidden); });
   document.getElementById("closeB").addEventListener("click", function () { setB(false); });
 })();
