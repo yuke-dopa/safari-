@@ -406,6 +406,9 @@
   var text = document.getElementById("fbText"), send = document.getElementById("fbSend"), done = document.getElementById("fbDone");
   open.addEventListener("click", function () { box.hidden = !box.hidden; if (!box.hidden) text.focus(); });
   // YouTubeの画面の「ご不満・ご要望」から来たとき（#fb）は、書く欄を開いた状態で見せる
+  // ホームの「〇〇が不便…こちらに」から来たときは要望も多いので、入力欄の例を要望向けにする
+  // （このページの「解決しませんか？」から開いたときは、「設定が反映されない」の例のまま）
+  if (location.hash === "#fb") text.placeholder = "例：〇〇の機能が欲しい/〇〇のときバグる";
   if (location.hash === "#fb") { document.getElementById("fb").hidden = false; box.hidden = false; setTimeout(function () { document.getElementById("fb").scrollIntoView({ block: "start" }); }, 80); }
   send.addEventListener("click", function () {
     var v = (text.value || "").trim();
