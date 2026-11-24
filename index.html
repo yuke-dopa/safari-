@@ -183,8 +183,9 @@
     // 2026-11-24：設定できている人でも、8秒たっても返事がないときは、勝手にYouTubeへは進まない
     // （入れ直した直後などは、拡張機能が動かないままYouTubeが開き、おすすめが見えてしまった）。
     // 「準備に時間がかかっています」と出して、設定のボタンと「このままYouTubeを開く」を出す。待ち続け、動けばそのままYouTubeへ
-    // 2026-11-24：待ち時間は3秒にした（8秒は長い）。「このままYouTubeを開く」は出さない（ユーザーの指示）
-    if (setUpUser && !checkMode && !ready && !helpShown && (firstLoadAt ? performance.now() - firstLoadAt > 2500 : el > 3000) && !DEMO) {
+    // 2026-11-24：設定できている人（アプリが「最後まで設定できている」と分かっている人）には、すぐには案内を出さない（ちゃんとできているのに出ると混乱するため）。
+    // 円を進めたまま「もう少しお待ちください…」で待ち、10秒たっても動かないときだけ案内を出す。設定が途中だと分かっている人は、アプリが ng=1 を付けるので、すぐ案内が出る
+    if (setUpUser && !checkMode && !ready && !helpShown && el > 10000 && !DEMO) {
       helpShown = true;
       ring.classList.add("stop");
       ring.hidden = true;
