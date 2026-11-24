@@ -60,6 +60,7 @@
   .ring.stop .bar { stroke: var(--sub); }
   .quick { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--card); color: var(--sub); font-size: 13px; text-decoration: none; }
   .quick b { color: var(--accent); white-space: nowrap; }
+  .lnk { display: block; margin: 14px auto 0; padding: 8px 12px; border: 0; background: none; color: var(--sub); font-family: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
   .probe { position: absolute; width: 1px; height: 1px; border: 0; opacity: 0; pointer-events: none; left: -10px; top: -10px; }
   body { margin: 0; }
 </style>
@@ -84,6 +85,8 @@
   <!-- アプリの設定画面を開く（アプリは「設定ができていない」と覚えて、次から最初に設定の画面を出す）
        待合室はアプリから開かれるので、アプリは入っている -->
   <a class="btn" id="setup" href="osusumehide://setup">拡張機能を設定する</a>
+  <!-- 準備に時間がかかっているとき：自分で選んでYouTubeへ進める（勝手には進まない。おすすめが見えてしまうため） -->
+  <button type="button" class="lnk" id="goYt" hidden>このままYouTubeを開く</button>
 </main>
 
 <script>
@@ -177,7 +180,21 @@
     // 2026-11-24：設定が最後まで済んでいる人（setUpUser）には、「動いていないかもしれません」は出さない（ユーザーの指示）。
     // Safariを開いた直後は拡張機能の準備が遅れるだけなので、返事を待ち続け、8秒たっても返事がなければ、そのままYouTubeへ進む
     var noAnswer = (!setUpUser && (notDone || (firstLoadAt ? now - firstLoadAt > helpWait : el > 2500))) || (checkMode && el > 8000);
-    if (setUpUser && !checkMode && !ready && !done && el > 8000 && !DEMO) { done = true; location.replace(dest); return; }
+    // 2026-11-24：設定できている人でも、8秒たっても返事がないときは、勝手にYouTubeへは進まない
+    // （入れ直した直後などは、拡張機能が動かないままYouTubeが開き、おすすめが見えてしまった）。
+    // 「準備に時間がかかっています」と出して、設定のボタンと「このままYouTubeを開く」を出す。待ち続け、動けばそのままYouTubeへ
+    if (setUpUser && !checkMode && !ready && !helpShown && el > 8000 && !DEMO) {
+      helpShown = true;
+      ring.classList.add("stop");
+      ring.hidden = true;
+      document.getElementById("title").textContent = ja ? "準備に時間がかかっています" : "This is taking a while";
+      document.getElementById("wait").hidden = true;
+      document.getElementById("setup").hidden = false;
+      var gy = document.getElementById("goYt");
+      // リンクではなく、このタブのまま移る（リンクを押すと、iPhoneがYouTube公式アプリで開こうとすることがあるため）
+      gy.onclick = function () { location.replace(dest); }; gy.hidden = false;
+      if (!ja) gy.textContent = "Open YouTube anyway";
+    }
     // 設定できている人には、3秒たったら「もう少し」とだけ出す（ボタンは出さない）
     if (setUpUser && !ready && !helpShown && el > 1500 && !slowShown) {
       slowShown = true;
@@ -194,7 +211,7 @@
       ring.hidden = true; // 案内を出したら、％の円は消す（99％で止まって見えないように） // 案内を出したら「数秒お待ちください」は消す
     }
     // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備が遅れることがある）。オンだと分かれば、そのままYouTubeへ
-    if (ready) { ring.classList.remove("stop"); ring.hidden = false; document.getElementById("setup").hidden = true; }
+    if (ready) { ring.classList.remove("stop"); ring.hidden = false; document.getElementById("setup").hidden = true; document.getElementById("goYt").hidden = true; }
     // 準備ができたら、円の動きを待たずに、すぐYouTubeへ
     if (ready && !DEMO && shown < 1) {
       shown = 1;
