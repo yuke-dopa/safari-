@@ -169,7 +169,10 @@
 
     // 確かめるページが読み込まれてから少し（最近動いていたなら1.2秒、それ以外は2.5秒）たっても返事がなければ、
     // 拡張機能がオフかもしれないので、すぐ案内を出す（読み込み自体が遅いときは、開いてから4秒で出す）。円は灰色にする
-    var noAnswer = notDone || (firstLoadAt ? now - firstLoadAt > helpWait : el > (setUpUser ? 4500 : 2500));
+    // 2026-11-24：設定が最後まで済んでいる人（setUpUser）には、「動いていないかもしれません」は出さない（ユーザーの指示）。
+    // Safariを開いた直後は拡張機能の準備が遅れるだけなので、返事を待ち続け、8秒たっても返事がなければ、そのままYouTubeへ進む
+    var noAnswer = !setUpUser && (notDone || (firstLoadAt ? now - firstLoadAt > helpWait : el > 2500));
+    if (setUpUser && !ready && !done && el > 8000 && !DEMO) { done = true; location.replace(dest); return; }
     // 設定できている人には、3秒たったら「もう少し」とだけ出す（ボタンは出さない）
     if (setUpUser && !ready && !helpShown && el > 1500 && !slowShown) {
       slowShown = true;
