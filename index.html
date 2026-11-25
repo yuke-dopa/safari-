@@ -87,6 +87,8 @@
   <a class="btn" id="setup" href="osusumehide://setup">拡張機能を設定する</a>
   <!-- 準備に時間がかかっているとき：自分で選んでYouTubeへ進める（勝手には進まない。おすすめが見えてしまうため） -->
   <button type="button" class="lnk" id="goYt" hidden>このままYouTubeを開く</button>
+  <!-- 設定できているか分からない人へ：言い切らずに、設定への出口だけ小さく先に見せる -->
+  <a class="lnk" id="softSetup" href="osusumehide://setup" hidden>設定がまだの方はこちら ›</a>
 </main>
 
 <script>
@@ -146,6 +148,9 @@
   if (notDone) setUpUser = false;
   // 2026-11-24：アプリを入れ直した直後など、「設定できているか、まだ確かめていない」とき（chk=1）。
   // 設定できている人もいるので、2.5秒だけ待つ（2026-11-24：8秒は長いので短くした）。動けばそのままYouTubeへ、動かなければ案内を出す
+  // アプリが「拡張機能はオン」と分かっているか（on=1。iOS 26.2以上だけ分かる）
+  var knownOn = false;
+  try { knownOn = new URLSearchParams(location.search).get("on") === "1"; } catch (e) { knownOn = false; }
   var checkMode = false;
   try { checkMode = new URLSearchParams(location.search).get("chk") === "1"; } catch (e) { checkMode = false; }
   if (checkMode) { setUpUser = true; notDone = false; }
@@ -167,7 +172,10 @@
     var el = now - t0;
     if (DEMO && el > demoReadyAt) ready = true;
     // 進み具合：途中でゆっくりにならないよう、10秒で99%まで、ずっと同じ速さで進む（準備ができたら、そこから100%へ）
-    var target = ready ? 1 : helpShown ? shown : Math.min(0.99, el / 10000); // 案内を出したら、それ以上は進めない
+    // 2026-11-25：進み具合の見せ方を分ける。
+    //  ・設定できていると分かっている人（on=1）：素早く進める（3秒で99%）。動いた瞬間に100%でYouTubeへ
+    //  ・それ以外（設定できているか分からない人）：序盤から伸び悩ませ、約7割手前で止まりそうに見せる（このあと設定の案内が出ることを匆わせる）
+    var target = ready ? 1 : helpShown ? shown : knownOn ? Math.min(0.99, el / 3000) : 0.68 * (1 - Math.exp(-el / 700)); // 案内を出したら、それ以上は進めない
     shown = ready ? shown + (1 - shown) * Math.min(1, dt / 90) : target;
     if (ready && 1 - shown < 0.004) shown = 1;
     bar.style.strokeDashoffset = (C * (1 - shown)).toFixed(2);
@@ -185,11 +193,20 @@
     // 「準備に時間がかかっています」と出して、設定のボタンと「このままYouTubeを開く」を出す。待ち続け、動けばそのままYouTubeへ
     // 2026-11-24：設定できている人（アプリが「最後まで設定できている」と分かっている人）には、すぐには案内を出さない（ちゃんとできているのに出ると混乱するため）。
     // 円を進めたまま「もう少しお待ちください…」で待ち、10秒たっても動かないときだけ案内を出す。設定が途中だと分かっている人は、アプリが ng=1 を付けるので、すぐ案内が出る
-    if (setUpUser && !checkMode && !ready && !helpShown && el > 10000 && !DEMO) {
+    // 2026-11-24：アプリがオンだと分かっている（iOS 26.2以上で on=1）ときだけ10秒待つ。分からない端末（古いiOS）は3秒で案内する
+    // 設定できていると分かっている人（on=1）には、設定の案内は出さない（15秒たっても動かないときだけ、最後の逃げ道として出す）。分からない人は3秒で案内する
+    // 2026-11-25：設定できているか分からない人に、早めに「動いていない」と言い切ると、実は設定できている人が混乱する。
+    // 3秒では小さなリンク（設定がまだの方はこちら）だけを出し、8秒で初めて案内を出す
+    if (setUpUser && !checkMode && !knownOn && !ready && !helpShown && el > 3000 && !DEMO) document.getElementById("softSetup").hidden = false;
+    if (setUpUser && !checkMode && !ready && !helpShown && el > (knownOn ? 15000 : 8000) && !DEMO) {
+      document.getElementById("softSetup").hidden = true;
       helpShown = true;
       ring.classList.add("stop");
       ring.hidden = true;
-      document.getElementById("title").textContent = ja ? "準備に時間がかかっています" : "This is taking a while";
+      // オンだと分かっている人：準備が遅れているだけなので、やわらかい文。分からない人：動いていない見込みが高いので、設定へ案内する文
+      document.getElementById("title").textContent = knownOn
+        ? (ja ? "準備に時間がかかっています" : "This is taking a while")
+        : (ja ? "拡張機能が動いていないかもしれません" : "The extension may not be running");
       document.getElementById("wait").hidden = true;
       document.getElementById("setup").hidden = false;
     }
@@ -209,7 +226,7 @@
       ring.hidden = true; // 案内を出したら、％の円は消す（99％で止まって見えないように） // 案内を出したら「数秒お待ちください」は消す
     }
     // 案内を出したあとも待ち続ける（Safariを開いた直後は、拡張機能の準備が遅れることがある）。オンだと分かれば、そのままYouTubeへ
-    if (ready) { ring.classList.remove("stop"); ring.hidden = false; document.getElementById("setup").hidden = true; document.getElementById("goYt").hidden = true; }
+    if (ready) { ring.classList.remove("stop"); ring.hidden = false; document.getElementById("setup").hidden = true; document.getElementById("goYt").hidden = true; document.getElementById("softSetup").hidden = true; }
     // 準備ができたら、円の動きを待たずに、すぐYouTubeへ
     if (ready && !DEMO && shown < 1) {
       shown = 1;
