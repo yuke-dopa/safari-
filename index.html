@@ -150,7 +150,10 @@
   // 設定できている人もいるので、2.5秒だけ待つ（2026-11-24：8秒は長いので短くした）。動けばそのままYouTubeへ、動かなければ案内を出す
   // アプリが「拡張機能はオン」と分かっているか（on=1。iOS 26.2以上だけ分かる）
   var knownOn = false;
-  try { knownOn = new URLSearchParams(location.search).get("on") === "1"; } catch (e) { knownOn = false; }
+  // 2026-11-25：on=1 でも、「オンか分からない人」と同じ見せ方にする（ユーザーの指示）。
+  // スイッチがオンでも「YouTubeの許可」だけまだの人がいて、その人に15秒待たせたうえ「準備に時間がかかっています」と出していたため。
+  // → 7割手前で止まる円・3秒で「設定がまだの方はこちら ›」・8秒で「拡張機能が動いていないかもしれません」と設定の案内
+  // （アプリは今も on=1 を付けてくる。この値は使わない）
   var checkMode = false;
   try { checkMode = new URLSearchParams(location.search).get("chk") === "1"; } catch (e) { checkMode = false; }
   if (checkMode) { setUpUser = true; notDone = false; }
