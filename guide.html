@@ -90,7 +90,7 @@
   // iPadかどうか（新しいiPadは「Mac」と名乗るので、指で触れるかでも見分ける）で、手順の動画を選ぶ
   var pad = /iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
   var vid = document.getElementById("vid"), vidBox = document.getElementById("vidBox");
-  vid.src = pad ? "setup-ipad.mp4" : "setup-iphone.mp4";
+  vid.src = (pad ? "setup-ipad.mp4" : "setup-iphone.mp4") + "?v=2"; // v=2：無音の音声入り
   // 動画の先頭には、①を3.5秒多く入れてある（1回目だけ①を長く見せる）。最後まで流れたら、その分を飛ばして流し直す
   vid.addEventListener("ended", function () { try { vid.currentTime = 3.5; vid.play(); } catch (e) { /* なにもしない */ } });
   var YT = "https://m.youtube.com/?noapp=1#osh-setup";
@@ -114,6 +114,9 @@
     } catch (e) { /* 浮かべられない端末 */ }
   }
   function tryFloat() {
+    // 動画には無音の音声が入っている。消音のままだと、YouTubeのタブに移ったときにSafariが動画を止めて、小さな画面が消える。
+    // 押したときに消音をやめて「音のある動画」として流すと、ほかのタブに移っても浮かんだまま残る（2026-11-26）
+    vid.muted = false;
     var p = vid.play();
     if (p && p.catch) p.catch(function () {});
     // 読み込みが済んでいないと浮かべられないので、流し始めて、もう一度押してもらう
